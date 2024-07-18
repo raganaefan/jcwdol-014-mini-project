@@ -19,3 +19,47 @@ model Sample {
 
   @@map("samples") // if you want to use snake_case format
 }
+
+model User {
+  id        Int        @id @default(autoincrement())
+  firstName String
+  lastName  String
+  email     String     @unique
+  password  String
+  role      Role
+  referral  String     @unique
+  points    Int        @default(0)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  referrals Referral[]
+  Event     Event[]
+
+  @@map("users")
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  name        String
+  date        DateTime
+  organizer   User     @relation(fields: [organizerId], references: [id])
+  organizerId Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("events")
+}
+
+model Referral {
+  id         Int      @id @default(autoincrement())
+  referredBy Int
+  userId     Int      @unique
+  User       User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@map("referrals")
+}
+
+enum Role {
+  CUSTOMER
+  ORGANIZER
+}
