@@ -119,11 +119,3 @@ export const user = async (req: Request, res: Response) => {
 
   return res.status(200).send(userData);
 };
-
-export const logout = async (req: Request, res: Response) => {
-  try {
-    res.clearCookie('token').status(200).json({ message: 'User logged out' });
-  } catch (error: any) {
-    res.json({ message: error.message });
-  }
-};
