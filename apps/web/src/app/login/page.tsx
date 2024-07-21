@@ -7,13 +7,16 @@ import {
   Center,
   Alert,
   AlertIcon,
+  Heading,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { setCookies } from '@/actions/cookies';
+import { useUser } from '@/context/UserContext';
 
 export default function Login() {
   const router = useRouter();
+  const { fetchUserData } = useUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -39,7 +42,9 @@ export default function Login() {
         const result = await response.json();
 
         setCookies('token', result.token);
+        await fetchUserData();
         router.push('/'); // Redirect to a protected page after successful login
+        router.refresh();
       } else {
         const errorData = await response.json();
         setError(errorData.error || 'Invalid email or password');
@@ -60,6 +65,7 @@ export default function Login() {
               {error}
             </Alert>
           )}
+          <Heading>Login</Heading>
           <Input
             placeholder="Email"
             size="md"

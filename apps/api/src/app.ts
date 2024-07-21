@@ -8,9 +8,11 @@ import express, {
   Router,
 } from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { PORT } from './config';
 import { SampleRouter } from './routers/sample.router';
 import { authRouter } from './routers/auth.router';
+import { userRouter } from './routers/user.router';
 
 export default class App {
   private app: Express;
@@ -23,8 +25,9 @@ export default class App {
   }
 
   private configure(): void {
-    this.app.use(cors());
+    this.app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
     this.app.use(json());
+    this.app.use(cookieParser());
     this.app.use(urlencoded({ extended: true }));
   }
 
@@ -60,6 +63,7 @@ export default class App {
 
     this.app.use('/api/samples', sampleRouter.getRouter());
     this.app.use('/api/auth', authRouter);
+    this.app.use('/api/user', userRouter);
   }
 
   public start(): void {
