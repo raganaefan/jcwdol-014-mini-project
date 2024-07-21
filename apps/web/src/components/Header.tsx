@@ -21,7 +21,7 @@ import {
   Link,
 } from '@chakra-ui/react';
 import { SearchIcon, HamburgerIcon, ChevronDownIcon } from '@chakra-ui/icons';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Menu,
   MenuButton,
@@ -38,9 +38,25 @@ import {
 } from '@chakra-ui/react';
 import { CSSTransition } from 'react-transition-group';
 import { MdChevronLeft, MdChevronRight, MdMenu } from 'react-icons/md';
+import { deleteCookie } from '@/actions/cookies';
+import { useRouter } from 'next/navigation';
+import { useUser } from '@/context/UserContext';
 
 export default function Header() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { user, setUser, fetchUserData } = useUser();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      deleteCookie('token');
+      setUser(null);
+      router.push('/');
+      router.refresh();
+    } catch (err) {
+      console.error('Logout failed', err);
+    }
+  };
 
   return (
     <Flex
@@ -112,14 +128,36 @@ export default function Header() {
           </MenuList>
         </Menu>
 
-        <Link href="/login">
-          <Button colorScheme="orange">Log In</Button>
-        </Link>
-        <Link href="/signup">
-          <Button colorScheme="orange" variant="outline">
-            Sign Up
-          </Button>
-        </Link>
+        {user ? (
+          <Menu>
+            <MenuButton
+              as={Button}
+              rightIcon={<ChevronDownIcon />}
+              variant="link"
+              color="gray.500"
+              _hover={{ color: 'blue.500' }}
+            >
+              Hi, {user.firstName}
+            </MenuButton>
+            <MenuList>
+              <Link href="/profile">
+                <MenuItem>Profile</MenuItem>
+              </Link>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            </MenuList>
+          </Menu>
+        ) : (
+          <>
+            <Link href="/login">
+              <Button colorScheme="orange">Log In</Button>
+            </Link>
+            <Link href="/signup">
+              <Button colorScheme="orange" variant="outline">
+                Sign Up
+              </Button>
+            </Link>
+          </>
+        )}
       </HStack>
 
       {/* Drawer (Mobile Navigation) */}
@@ -158,16 +196,38 @@ export default function Header() {
                 </MenuList>
               </Menu>
 
-              <Link href="/login">
-                <Button colorScheme="orange" w="full">
-                  Log In
-                </Button>
-              </Link>
-              <Link href="/signup">
-                <Button colorScheme="orange" variant="outline" w="full">
-                  Sign Up
-                </Button>
-              </Link>
+              {user ? (
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    rightIcon={<ChevronDownIcon />}
+                    variant="link"
+                    color="gray.500"
+                    _hover={{ color: 'blue.500' }}
+                  >
+                    {user.firstName}
+                  </MenuButton>
+                  <MenuList>
+                    <Link href="/profile">
+                      <MenuItem>Profile</MenuItem>
+                    </Link>
+                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                  </MenuList>
+                </Menu>
+              ) : (
+                <>
+                  <Link href="/login">
+                    <Button colorScheme="orange" w="full">
+                      Log In
+                    </Button>
+                  </Link>
+                  <Link href="/signup">
+                    <Button colorScheme="orange" variant="outline" w="full">
+                      Sign Up
+                    </Button>
+                  </Link>
+                </>
+              )}
             </VStack>
           </DrawerBody>
         </DrawerContent>

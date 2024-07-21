@@ -16,6 +16,7 @@ import {
   AlertTitle,
   AlertDescription,
   CloseButton,
+  useToast,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -28,6 +29,7 @@ export default function Signup() {
   const [password, setPassword] = useState('');
   const [referral, setReferral] = useState('');
   const [error, setError] = useState('');
+  const toast = useToast();
 
   const handleSubmit = async (event: React.FormEvent, role: string) => {
     event.preventDefault();
@@ -64,7 +66,7 @@ export default function Signup() {
 
   return (
     <Center mt="50px" mb="50px">
-      <Tabs variant="soft-rounded" colorScheme="teal">
+      <Tabs variant="soft-rounded" colorScheme="orange">
         <TabList>
           <Tab>Register as Customer</Tab>
           <Tab>Register as Organizer</Tab>
@@ -127,7 +129,20 @@ export default function Signup() {
                   value={referral}
                   onChange={(e) => setReferral(e.target.value)}
                 />
-                <Button type="submit">Sign Up</Button>
+                <Button
+                  type="submit"
+                  onClick={() =>
+                    toast({
+                      title: 'Account created.',
+                      description: "We've created your account for you.",
+                      status: 'success',
+                      duration: 9000,
+                      isClosable: true,
+                    })
+                  }
+                >
+                  Sign Up
+                </Button>
               </Stack>
             </form>
           </TabPanel>
@@ -188,7 +203,20 @@ export default function Signup() {
                   value={referral}
                   onChange={(e) => setReferral(e.target.value)}
                 />
-                <Button type="submit">Sign Up</Button>
+                <Button
+                  type="submit"
+                  onClick={() =>
+                    toast({
+                      title: 'Account created.',
+                      description: "We've created your account for you.",
+                      status: 'success',
+                      duration: 9000,
+                      isClosable: true,
+                    })
+                  }
+                >
+                  Sign Up
+                </Button>
               </Stack>
             </form>
           </TabPanel>

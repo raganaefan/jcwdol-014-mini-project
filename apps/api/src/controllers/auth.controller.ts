@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { compare, genSalt, hash } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
+import { addMonths } from 'date-fns';
 
 const prisma = new PrismaClient();
 
@@ -11,7 +12,6 @@ export const register = async (req: Request, res: Response) => {
   const referralCode = Math.random().toString(36).substring(2, 10);
   const salt = await genSalt(10);
   const hashedPassword = await hash(password, salt);
-  // const hashedPassword = await bcrypt.hash(password, 10);
 
   try {
     // Check if the email is already registered
@@ -34,16 +34,34 @@ export const register = async (req: Request, res: Response) => {
     if (referral) {
       const referrer = await prisma.user.findUnique({ where: { referral } });
       if (referrer) {
+        const now = new Date();
+        const expirationDate = addMonths(now, 3);
         await prisma.referral.create({
           data: {
             referredBy: referrer.id,
             userId: user.id,
+            expiredAt: expirationDate,
           },
         });
         await prisma.user.update({
           where: { id: referrer.id },
           data: {
             points: { increment: 10000 },
+          },
+        });
+        await prisma.discountCoupon.create({
+          data: {
+            userId: user.id,
+            discount: 0.1, // 10% discount
+            expiredAt: expirationDate,
+          },
+        });
+
+        await prisma.pointHistory.create({
+          data: {
+            userId: referrer.id,
+            points: 10000,
+            expiredAt: expirationDate,
           },
         });
       }
@@ -79,10 +97,10 @@ export const login = async (req: Request, res: Response) => {
 
     const jwtPayload = {
       id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      // firstName: user.firstName,
+      // lastName: user.lastName,
       email: user.email,
-      role: user?.role,
+      // role: user?.role,
     };
     const token = await sign(jwtPayload, 'SECRET_KEY', { expiresIn: '1h' });
 
@@ -100,4 +118,12 @@ export const user = async (req: Request, res: Response) => {
   const userData = await prisma.user.findMany();
 
   return res.status(200).send(userData);
+};
+
+export const logout = async (req: Request, res: Response) => {
+  try {
+    res.clearCookie('token').status(200).json({ message: 'User logged out' });
+  } catch (error: any) {
+    res.json({ message: error.message });
+  }
 };

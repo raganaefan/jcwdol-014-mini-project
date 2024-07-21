@@ -33,6 +33,8 @@ model User {
   updatedAt DateTime   @updatedAt
   referrals Referral[]
   Event     Event[]
+  discountCoupon DiscountCoupon[]
+  PointHistory  PointHistory[]
 
   @@map("users")
 }
@@ -55,8 +57,27 @@ model Referral {
   userId     Int      @unique
   User       User     @relation(fields: [userId], references: [id])
   createdAt  DateTime @default(now())
+  expiredAt  DateTime
 
   @@map("referrals")
+}
+
+model DiscountCoupon {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  discount   Float
+  expiredAt  DateTime
+  createdAt  DateTime @default(now())
+  User       User     @relation(fields: [userId], references: [id])
+}
+
+model PointHistory {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  points     Int
+  expiredAt  DateTime
+  createdAt  DateTime @default(now())
+  User       User     @relation(fields: [userId], references: [id])
 }
 
 enum Role {
