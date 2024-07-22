@@ -8,10 +8,11 @@ import React, {
   ReactNode,
 } from 'react';
 import { findMe } from '@/api/user';
+import { Role } from '@prisma/client';
 
 interface User {
   firstName: string;
-  // Add other fields as necessary
+  role: Role;
 }
 
 interface UserContextType {

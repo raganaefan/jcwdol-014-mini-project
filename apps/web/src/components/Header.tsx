@@ -102,9 +102,11 @@ export default function Header() {
         <Link href="/find-events">
           <Text>Find Events</Text>
         </Link>
-        <Link href="/create-event">
-          <Text>Create Event</Text>
-        </Link>
+        {user?.role === 'ORGANIZER' && (
+          <Link href="/create-event">
+            <Text>Create Event</Text>
+          </Link>
+        )}
 
         {/* Dropdown Menu */}
         <Menu>
@@ -170,9 +172,11 @@ export default function Header() {
               <Link href="/find-events">
                 <Text>Find Events</Text>
               </Link>
-              <Link href="/create-event">
-                <Text>Create Event</Text>
-              </Link>
+              {user?.role === 'ORGANIZER' && (
+                <Link href="/create-event">
+                  <Text>Create Event</Text>
+                </Link>
+              )}
 
               {/* Dropdown Menu */}
               <Menu>

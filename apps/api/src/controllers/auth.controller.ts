@@ -97,10 +97,10 @@ export const login = async (req: Request, res: Response) => {
 
     const jwtPayload = {
       id: user.id,
-      // firstName: user.firstName,
-      // lastName: user.lastName,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
-      // role: user?.role,
+      role: user?.role,
     };
     const token = await sign(jwtPayload, 'SECRET_KEY', { expiresIn: '1h' });
 

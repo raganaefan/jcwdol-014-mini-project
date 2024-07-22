@@ -13,6 +13,7 @@ import { PORT } from './config';
 import { SampleRouter } from './routers/sample.router';
 import { authRouter } from './routers/auth.router';
 import { userRouter } from './routers/user.router';
+import { eventRouter } from './routers/event.route';
 
 export default class App {
   private app: Express;
@@ -64,6 +65,7 @@ export default class App {
     this.app.use('/api/samples', sampleRouter.getRouter());
     this.app.use('/api/auth', authRouter);
     this.app.use('/api/user', userRouter);
+    this.app.use('/api/event', eventRouter);
   }
 
   public start(): void {
