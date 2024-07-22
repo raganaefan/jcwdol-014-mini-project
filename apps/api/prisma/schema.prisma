@@ -32,21 +32,28 @@ model User {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   referrals Referral[]
-  Event     Event[]
+  Events     Event[]
   discountCoupon DiscountCoupon[]
   PointHistory  PointHistory[]
+  Attendee    Attendee[]
+  Transaction Transaction[]
+
 
   @@map("users")
 }
 
 model Event {
   id          Int      @id @default(autoincrement())
-  name        String
+  eventName   String
+  description String
+  price       Int
   date        DateTime
   organizer   User     @relation(fields: [organizerId], references: [id])
   organizerId Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  Attendee    Attendee[]
+  Transaction Transaction[]
 
   @@map("events")
 }
@@ -78,6 +85,25 @@ model PointHistory {
   expiredAt  DateTime
   createdAt  DateTime @default(now())
   User       User     @relation(fields: [userId], references: [id])
+}
+
+model Attendee {
+  id      Int      @id @default(autoincrement())
+  eventId Int
+  userId  Int
+  createdAt DateTime @default(now())
+  Event   Event     @relation(fields: [eventId], references: [id])
+  User    User      @relation(fields: [userId], references: [id])
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  eventId   Int
+  userId    Int
+  amount    Int
+  createdAt DateTime @default(now())
+  Event     Event    @relation(fields: [eventId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
 }
 
 enum Role {

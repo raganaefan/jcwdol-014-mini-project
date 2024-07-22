@@ -1,12 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
+type Role = 'ORGANIZER' | 'CUSTOMER';
+
 declare global {
   namespace Express {
     interface Request {
       user: {
         id: Number;
         email: string;
+        firstName: string;
+        lastName: string;
+        role: Role;
       };
     }
   }
@@ -31,6 +36,9 @@ export async function verifyToken(
     const verifiedUser = jwt.verify(token, 'SECRET_KEY') as JwtPayload & {
       id: Number;
       email: string;
+      firstName: string;
+      lastName: string;
+      role: Role;
     };
 
     if (!verifiedUser) {
@@ -40,6 +48,9 @@ export async function verifyToken(
     req.user = {
       id: verifiedUser.id,
       email: verifiedUser.email,
+      firstName: verifiedUser.firstName,
+      lastName: verifiedUser.lastName,
+      role: verifiedUser.role,
     };
 
     next();
