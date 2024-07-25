@@ -80,7 +80,7 @@ export default function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button type="submit">Sign In</Button>
+          <Button type="submit" colorScheme="orange">Sign In</Button>
         </Stack>
       </form>
     </Center>

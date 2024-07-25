@@ -99,7 +99,7 @@ export default function Header() {
 
       {/* Desktop Navigation (hidden on smaller screens) */}
       <HStack spacing={4} display={{ base: 'none', md: 'flex' }}>
-        <Link href="/find-events">
+        <Link href="/apps/web/src/app/page.tsx">
           <Text>Find Events</Text>
         </Link>
         {user?.role === 'ORGANIZER' && (

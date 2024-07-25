@@ -140,6 +140,7 @@ export default function Signup() {
                       isClosable: true,
                     })
                   }
+                  colorScheme="orange"
                 >
                   Sign Up
                 </Button>
@@ -214,6 +215,7 @@ export default function Signup() {
                       isClosable: true,
                     })
                   }
+                  colorScheme="orange"
                 >
                   Sign Up
                 </Button>

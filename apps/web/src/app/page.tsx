@@ -5,11 +5,17 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Hero from '@/components/Hero';
+import Container from '@/components/Container';
+import EventHub from '@/components/EventHub';
+import EventList from '@/components/EventList';
 
 export default function Home() {
   return (
     <div>
-      <Hero />
+     <EventList />
+      <EventHub />
+      <Hero />  
+      <Container />    
     </div>
   );
 }
