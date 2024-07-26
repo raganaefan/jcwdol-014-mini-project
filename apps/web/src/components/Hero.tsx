@@ -42,10 +42,10 @@ interface Event {
   location: string;
   description: string;
   category: string;
-  price: number; // Assuming price in cents/smallest unit
+  price: number; 
 }
 
-// Event List (Placeholder Data - Replace with actual data)
+// Event List 
 const events: Event[] = [
   {
     id: 1,
@@ -54,7 +54,7 @@ const events: Event[] = [
     date: "2023-09-15",
     time: "19:00",
     location: "Jakarta",
-    description: "Music Concert Description",
+    description: "Music Concert Description jguyfuyf",
     category: "Music",
     price: 150000,
   },
@@ -121,7 +121,7 @@ export default function HeroSection() {
         event.title.toLowerCase().includes(query.toLowerCase())
       );
       setFilteredEvents(filtered);
-    }, 300), // Adjust debounce delay as needed
+    }, 300), 
     []
   );
 
@@ -217,9 +217,6 @@ export default function HeroSection() {
                 <ButtonGroup spacing="4">
                   <Button variant="solid" colorScheme="orange" size="md">
                     Buy
-                  </Button>
-                  <Button variant="ghost" colorScheme="orange" size="md">
-                    Add to cart
                   </Button>
                 </ButtonGroup>
               </CardFooter>

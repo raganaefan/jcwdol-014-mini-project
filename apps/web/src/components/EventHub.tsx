@@ -13,7 +13,7 @@ import { motion } from 'framer-motion';
 
 function EventHubHero() {
   return (
-    <Box bgImage="url('./images/banana.jpg')" bgSize="cover" color="white" py={20} textAlign="center">
+    <Box bgImage="url('./images/banana.jpg')" bgSize="cover" color="white" py={250} textAlign="center">
       <VStack spacing={8} align="center">
         <Heading as="h4" size="xl">
           Hi, Welcome to Event<span style={{ color: 'orange' }}>Hub.</span>

@@ -7,12 +7,11 @@ import Footer from '@/components/Footer';
 import Hero from '@/components/Hero';
 import Container from '@/components/Container';
 import EventHub from '@/components/EventHub';
-import EventList from '@/components/EventList';
+// import EventList from '@/components/EventList';
 
 export default function Home() {
   return (
     <div>
-     <EventList />
       <EventHub />
       <Hero />  
       <Container />    

@@ -27,6 +27,7 @@ export default function CreateEvent() {
 
   const handleCreateEvent = async (event: React.FormEvent) => {
     event.preventDefault();
+    setIsLoading(true); // Tampilkan loading
 
     const formattedDate = new Date(date).toISOString();
     try {
@@ -113,9 +114,18 @@ export default function CreateEvent() {
             onChange={(e) => setDate(e.target.value)}
           />
         </FormControl>
-        <Button colorScheme="orange" type="submit">
+        {/* <Button colorScheme="orange" type="submit">
           Submit
-        </Button>
+        </Button> */}
+              <Button
+        isLoading={isLoading} 
+        type="submit"
+        colorScheme="whiteAlpha"
+        rightIcon={isSuccess ? <CheckCircleIcon /> : <WarningIcon />} // Menampilkan ikon berdasarkan status
+      >
+        submit
+      </Button>
+
       </form>
     </Box>
   );

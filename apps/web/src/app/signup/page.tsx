@@ -17,7 +17,12 @@ import {
   AlertDescription,
   CloseButton,
   useToast,
+  Box,
+  useColorModeValue,
+  Link,
+
 } from '@chakra-ui/react';
+import { motion, Transition } from 'framer-motion';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -31,6 +36,13 @@ export default function Signup() {
   const [error, setError] = useState('');
   const toast = useToast();
 
+  const bg = useColorModeValue("gray.50", "gray.800");
+  const textColor = useColorModeValue("gray.700", "white");
+  const borderColor = useColorModeValue("gray.200", "gray.700");
+  const backgroundVariants = {
+    initial: { backgroundPosition: "0% 50%" },
+    animate: { backgroundPosition: "100% 50%" },
+  };
   const handleSubmit = async (event: React.FormEvent, role: string) => {
     event.preventDefault();
 
@@ -65,8 +77,17 @@ export default function Signup() {
   };
 
   return (
-    <Center mt="50px" mb="50px">
-      <Tabs variant="soft-rounded" colorScheme="orange">
+    <Center mt="300px" mb="200px">
+      <Box
+        flex={1}
+        p={20}
+        maxW="700"
+        borderWidth="1px"
+        borderRadius="lg"
+        bg="white"
+        boxShadow="lg"
+        borderColor={borderColor}>
+      <Tabs isFitted isLazy colorScheme="green">
         <TabList>
           <Tab>Register as Customer</Tab>
           <Tab>Register as Organizer</Tab>
@@ -131,6 +152,22 @@ export default function Signup() {
                 />
                 <Button
                   type="submit"
+                  as={motion.button}
+                  bgGradient="linear(to-r, green.200, orange.500)"
+                  color="white"
+                  variants={backgroundVariants}
+                  animate="animate"
+                  initial="initial"
+                  transition={{
+                    duration: "2s", // Durasi animasi (dalam detik)
+                    repeat: "Infinity", // Ulangi tanpa batas
+                    repeatType: "reverse", // Animasi bolak-balik
+                    ease: "linear", // Jenis transisi (linear, easeIn, easeOut, dll.)
+                  }}
+                  _hover={{
+                    scale: 1.05,
+                    boxShadow: "xl",
+                  }}
                   onClick={() =>
                     toast({
                       title: 'Account created.',
@@ -140,7 +177,7 @@ export default function Signup() {
                       isClosable: true,
                     })
                   }
-                  colorScheme="orange"
+                  
                 >
                   Sign Up
                 </Button>
@@ -206,6 +243,22 @@ export default function Signup() {
                 />
                 <Button
                   type="submit"
+                  as={motion.button}
+                  bgGradient="linear(to-r, green.200, orange.500)"
+                  color="white"
+                  variants={backgroundVariants}
+                  animate="animate"
+                  initial="initial"
+                  transition={{
+                    duration: "2s", // Durasi animasi (dalam detik)
+                    repeat: "Infinity", // Ulangi tanpa batas
+                    repeatType: "reverse", // Animasi bolak-balik
+                    ease: "linear", // Jenis transisi (linear, easeIn, easeOut, dll.)
+                  }}
+                  _hover={{
+                    scale: 1.05,
+                    boxShadow: "xl",
+                  }}
                   onClick={() =>
                     toast({
                       title: 'Account created.',
@@ -215,15 +268,18 @@ export default function Signup() {
                       isClosable: true,
                     })
                   }
-                  colorScheme="orange"
                 >
                   Sign Up
                 </Button>
               </Stack>
             </form>
-          </TabPanel>
+           </TabPanel>
         </TabPanels>
       </Tabs>
+      <Center>
+        <h5>already have an account? <Link href="/login">Login</Link> </h5>
+      </Center>
+      </Box>
     </Center>
   );
 }

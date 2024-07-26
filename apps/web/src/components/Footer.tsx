@@ -3,7 +3,7 @@
 import React from 'react';
 import { Box, Flex, Link, Text } from '@chakra-ui/react';
 import { useColorModeValue } from '@chakra-ui/react';
-import { SimpleGrid, Stack, Heading } from '@chakra-ui/react'; // Add missing imports
+import { SimpleGrid, Stack, Heading } from '@chakra-ui/react';
 
 const Footer = () => {
   const bg = useColorModeValue('white', 'gray.800');
@@ -15,7 +15,7 @@ const Footer = () => {
         {/* Column 1: Logo and Links */}
         <Stack spacing={4}>
           <Heading as="h1" size="md" color={color}>
-            <Link href="/">EventApp</Link>
+            <Link href="/page.tsx">Event<span color='orange.500'>Hub</span></Link>
           </Heading>
           <Link href="/about">About Us</Link>
           <Link href="/careers">Careers</Link>
