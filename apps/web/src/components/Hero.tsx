@@ -2,6 +2,7 @@
 
 import {
   Box,
+  Link,
   Heading,
   Text,
   Image,
@@ -20,12 +21,16 @@ import {
   Button,
   ButtonGroup,
   Stack,
-  Divider
+  Divider,
+  useColorModeValue,
+  useMediaQuery,
 } from "@chakra-ui/react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { debounce } from "lodash"; // Or use a custom debounce function
 import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react'
+import { motion, useAnimation, useInView } from "framer-motion";
+import React from "react";
 
 // Event Interface
 interface Event {
@@ -35,13 +40,68 @@ interface Event {
   date: string;
   time: string;
   location: string;
+  description: string;
   category: string;
-  price: number; // Assuming price in cents/smallest unit
+  price: number; 
 }
 
-// Event List (Placeholder Data - Replace with actual data)
+// Event List 
 const events: Event[] = [
-  // ... (your event data here)
+  {
+    id: 1,
+    title: "Music Concert",
+    imageUrl: "/images/concert.jpg",
+    date: "2023-09-15",
+    time: "19:00",
+    location: "Jakarta",
+    description: "Music Concert Description jguyfuyf",
+    category: "Music",
+    price: 150000,
+  },
+  {
+    id: 2,
+    title: "Art Exhibition",
+    imageUrl: "/images/fireworks.jpg",
+    date: "2023-10-01",
+    time: "10:00",
+    location: "Bandung",
+    description: "Art Exhibition Description",
+    category: "Art",
+    price: 50000,
+  },
+  {
+    id: 3,
+    title: "Food Festival",
+    imageUrl: "/images/wedding.jpg",
+    date: "2023-11-20",
+    time: "12:00",
+    location: "Surabaya",
+    description: "Food Festival Description",
+    category: "Food",
+    price: 75000,
+  },
+  {
+    id: 4,
+    title: "Tech Conference",
+    imageUrl: "/images/plane.jpg",
+    date: "2023-12-05",
+    time: "09:00",
+    location: "Yogyakarta",
+    description: "Tech Conference Description",
+    category: "Technology",
+    price: 200000,
+  },
+  {
+    id: 5,
+    title: "Book Fair",
+    imageUrl: "/images/car.jpg",
+    date: "2023-08-25",
+    time: "14:00",
+    location: "Bali",
+    description: "Book Fair Description",
+    category: "Literature",
+    price: 30000,
+  },
 ];
 
 const categories = [...new Set(events.map((event) => event.category))]; // Get unique categories from events
@@ -61,7 +121,7 @@ export default function HeroSection() {
         event.title.toLowerCase().includes(query.toLowerCase())
       );
       setFilteredEvents(filtered);
-    }, 300), // Adjust debounce delay as needed
+    }, 300), 
     []
   );
 
@@ -83,9 +143,13 @@ export default function HeroSection() {
     setSearchQuery(newQuery);
     debouncedSearch(newQuery);
   };
-  const numItemsPerRow = useBreakpointValue({ base: 1, md: 2, lg: 3 });
+  const numItemsPerRow = useBreakpointValue({ base: 1, md: 2, lg: 4 });
+
+
   return (
+  
     <Box maxW="container.xl" mx="auto" mt={8} p={8}>
+       <Heading as="h2" size="4xl" color="orange.500">Explore Events</Heading>
       <Flex mb={8} direction={{ base: "column", md: "row" }} gap={4}>
         <Input
           placeholder="Search events..."
@@ -116,39 +180,55 @@ export default function HeroSection() {
         </Select>
       </Flex>
 
-      <Card maxW='sm'>
-  <CardBody>
-    <Image
-      src='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-      alt='Green double couch with wooden legs'
-      borderRadius='lg'
-    />
-    <Stack mt='6' spacing='3'>
-      <Heading size='md'>Living room Sofa</Heading>
-      <Text>
-        This sofa is perfect for modern tropical spaces, baroque inspired
-        spaces, earthy toned spaces and for people who love a chic design with a
-        sprinkle of vintage design.
-      </Text>
-      <Text color='blue.600' fontSize='2xl'>
-        $450
-      </Text>
-    </Stack>
-  </CardBody>
-  <Divider />
-  <CardFooter>
-    <ButtonGroup spacing='2'>
-      <Button variant='solid' colorScheme='blue'>
-        Buy now
-      </Button>
-      <Button variant='ghost' colorScheme='blue'>
-        Add to cart
-      </Button>
-    </ButtonGroup>
-  </CardFooter>
-</Card>
-      {/* Pagination */}
-      {/* ... tambahkan logika pagination di sini ... */}
+      <Grid templateColumns={`repeat(${numItemsPerRow}, 1fr)`} gap={6}>
+        {filteredEvents.map((event) => (
+          <GridItem key={event.id}>
+            <Card
+              overflow="hidden"
+              boxShadow="md"
+              transition="transform 0.2s"
+              borderWidth={1}
+              borderRadius="lg"
+              borderColor="gray.200"
+              _hover={{ transform: "scale(1.05)" }}
+              w="full"
+              h="full"
+            >
+              <Image
+                src={event.imageUrl}
+                alt={event.title}
+                borderRadius="lg"
+                mb={2}
+                objectFit="cover"
+                w="full"
+                h="200px"
+              />
+              <CardBody p={4}>
+                <Heading size="md" color="orange.700" my={2}>
+                  {event.title}
+                </Heading>
+                <Text fontWeight="bold" mb={1} fontSize="md">
+                  {event.date} / {event.time} - {event.location}
+                </Text>
+                <Text mb={1} fontSize="md">{event.description}</Text>
+                <Text mb={1} fontSize="md">{event.category}</Text>
+                <Text color="orange.600" fontWeight="bold" fontSize="md">
+                  {event.price}
+                </Text>
+              </CardBody>
+              <Divider />
+              <CardFooter p={4} bg="orange.50">
+                <ButtonGroup spacing="4">
+                  <Button variant="solid" colorScheme="orange" size="md">
+                    Buy
+                  </Button>
+                </ButtonGroup>
+              </CardFooter>
+            </Card>
+          </GridItem>
+        ))}
+      </Grid>
     </Box>
   );
 }
+
