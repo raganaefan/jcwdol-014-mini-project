@@ -87,18 +87,19 @@ export default function Header() {
           <Image
             src="./images/EVENTHUB.png"
             alt="Eventhub"
-            width="100px"
+            width="50px"
             boxSize="75px"
             objectFit="cover"
             borderRadius="0"
           />
         </Link>
-        <InputGroup maxW="400px" display={{ base: 'none', md: 'flex' }} marginX={2} alignSelf="left">
+        <InputGroup maxW="800px" display={{ base: 'none', md: 'flex' }} marginX={2} alignSelf={'left'}>
           <InputLeftElement pointerEvents="none">
             <SearchIcon color="white" />
           </InputLeftElement>
-          <Input type="text" placeholder="Search events" />
+          <Input type="text" placeholder="Start you JOURNEY here" />
         </InputGroup>
+
         <IconButton
           aria-label="Open Menu"
           size="md"
