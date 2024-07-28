@@ -35,7 +35,6 @@ model User {
   Events     Event[]
   discountCoupon DiscountCoupon[]
   PointHistory  PointHistory[]
-  Attendee    Attendee[]
   Transaction Transaction[]
 
 
@@ -46,13 +45,17 @@ model Event {
   id          Int      @id @default(autoincrement())
   eventName   String
   description String
+  category    String
+  location    String
   price       Int
   date        DateTime
+  time        String
+  imageUrl    String?
   organizer   User     @relation(fields: [organizerId], references: [id])
   organizerId Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  Attendee    Attendee[]
+  availSeats  Int
   Transaction Transaction[]
 
   @@map("events")
@@ -87,15 +90,6 @@ model PointHistory {
   User       User     @relation(fields: [userId], references: [id])
 }
 
-model Attendee {
-  id      Int      @id @default(autoincrement())
-  eventId Int
-  userId  Int
-  createdAt DateTime @default(now())
-  Event   Event     @relation(fields: [eventId], references: [id])
-  User    User      @relation(fields: [userId], references: [id])
-}
-
 model Transaction {
   id        Int      @id @default(autoincrement())
   eventId   Int
@@ -104,6 +98,8 @@ model Transaction {
   createdAt DateTime @default(now())
   Event     Event    @relation(fields: [eventId], references: [id])
   User      User     @relation(fields: [userId], references: [id])
+
+  @@map("transactions")
 }
 
 enum Role {
