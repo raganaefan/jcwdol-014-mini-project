@@ -141,6 +141,16 @@ export default function HeroSection() {
     );
   }
 
+  function ReviewHeader() {
+    return (
+      <Box py={900}> {/* Menambahkan padding vertikal untuk jarak */}
+        <Heading as="h2" size="xl" textAlign="center" mb={8}>
+          Review pengguna EventHub
+        </Heading>
+      </Box>
+    );
+  }
+
   return (
     <Box maxW="container.xl" mx="auto" mt={8} p={8}>
       <Flex mb={8} direction={{ base: 'column', md: 'row' }} gap={4}>

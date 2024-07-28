@@ -311,7 +311,9 @@ export default function TransactionPage() {
   }
 
   return (
-    <Box maxW="container.md" mx="auto" mt={8} p={8}>
+    <Box maxW="container.md" mx="auto" mt={8} p={8} py={220
+      
+    }>
       <Heading as="h1" mb={4}>
         {event.eventName}
       </Heading>
@@ -337,7 +339,7 @@ export default function TransactionPage() {
           <Text>Final Price:</Text>
           <Text fontWeight="bold">{formatRupiah(finalPrice)}</Text>
         </HStack>
-        <Button colorScheme="orange" size="md" onClick={handlePurchase}>
+        <Button bgGradient="linear(to-r, orange.300, orange.500, orange.700)" color="white" size="md" onClick={handlePurchase}>
           Confirm Purchase
         </Button>
       </VStack>

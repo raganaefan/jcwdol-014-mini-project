@@ -211,8 +211,8 @@ export default function Events() {
   };
 
   return (
-    <div>
-      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10} mx="20" my="10">
+    <div >
+      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10} mx="20" my="10" py={200}>
         <Box p={5} shadow="md" borderWidth="1px">
           <Stat>
             <StatLabel>Total Events Created</StatLabel>
@@ -274,7 +274,7 @@ export default function Events() {
               <Td>IDR {event.price}</Td>
               <Td>
                 <Button
-                  colorScheme="blue"
+                  colorScheme="orange"
                   onClick={() => handleEditClick(event)}
                 >
                   Edit

@@ -17,9 +17,16 @@ import {
   AlertDescription,
   CloseButton,
   useToast,
+  useColorModeValue,
+  Box,
+  Text,
+  Link,
+
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion, Transition,  useAnimation, useInView  } from "framer-motion";
+
 
 export default function Signup() {
   const router = useRouter();
@@ -30,6 +37,9 @@ export default function Signup() {
   const [referral, setReferral] = useState('');
   const [error, setError] = useState('');
   const toast = useToast();
+  const bg = useColorModeValue("gray.50", "gray.800"); // Dynamic background
+  const color = useColorModeValue("white", "gray.700"); // Dynamic text color
+  const buttonColorScheme = useColorModeValue("green", "orange"); 
 
   const handleSubmit = async (event: React.FormEvent, role: string) => {
     event.preventDefault();
@@ -65,14 +75,22 @@ export default function Signup() {
   };
 
   return (
-    <Center mt="50px" mb="50px">
-      <Tabs variant="soft-rounded" colorScheme="orange">
+    <Center mt={{ base: "50px", md: "100px" }} mb={{ base: "50px", md: "100px" }} py={{ base: "100", md: "170" }}  bgImage="url('/images/banana.jpg')" 
+    bgPosition="center"
+    bgSize="cover"
+    bgRepeat="no-repeat">
+      <Box p={8}  filter="auto" 
+      backdropFilter="blur(5px)"  borderRadius="md" boxShadow="lg" borderRadius="md" boxShadow="lg">
+      <Tabs isLazy
+        colorScheme="orange"
+        w={{ base: "90%", md: "80%", lg: "700px" }} 
+        align="center">
         <TabList>
-          <Tab>Register as Customer</Tab>
-          <Tab>Register as Organizer</Tab>
+          <Tab >Register as Customer</Tab>
+          <Tab >Register as Organizer</Tab>
         </TabList>
 
-        <TabPanels>
+        <TabPanels p={4}>
           <TabPanel>
             <form onSubmit={(e) => handleSubmit(e, 'CUSTOMER')}>
               <Stack spacing={3} w="500px">
@@ -131,6 +149,17 @@ export default function Signup() {
                 />
                 <Button
                   type="submit"
+                  as={motion.button}
+                  bgGradient="linear(to-r, orange.300, orange.500, orange.700)"
+                  backgroundSize="200% auto"
+                  _hover={{ backgroundPosition: "right center" }}
+                  animate={{ backgroundPosition: "left center" }}
+                  transition={{ repeat: "Infinity", duration: "2s", ease: "linear" }}
+                  color="white"
+                  fontWeight="bold"
+                  px={8}
+                  py={4}
+                  borderRadius="full"
                   onClick={() =>
                     toast({
                       title: 'Account created.',
@@ -143,6 +172,7 @@ export default function Signup() {
                 >
                   Sign Up
                 </Button>
+                <Text color="white">Already have an account? <Link href="/login">Login</Link></Text>
               </Stack>
             </form>
           </TabPanel>
@@ -205,6 +235,17 @@ export default function Signup() {
                 />
                 <Button
                   type="submit"
+                  as={motion.button}
+                  bgGradient="linear(to-r, orange.300, orange.500, orange.700)"
+                  backgroundSize="200% auto"
+                  _hover={{ backgroundPosition: "right center" }}
+                  animate={{ backgroundPosition: "left center" }}
+                  transition={{ repeat: "Infinity", duration: "2s", ease: "linear" }}
+                  color="white"
+                  fontWeight="bold"
+                  px={8}
+                  py={4}
+                  borderRadius="full"
                   onClick={() =>
                     toast({
                       title: 'Account created.',
@@ -214,14 +255,16 @@ export default function Signup() {
                       isClosable: true,
                     })
                   }
-                >
+                  >
                   Sign Up
                 </Button>
+                <Text color="white">Already have an account? <Link href="/login">Login</Link></Text>
               </Stack>
             </form>
           </TabPanel>
         </TabPanels>
       </Tabs>
+      </Box>
     </Center>
   );
 }
