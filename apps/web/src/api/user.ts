@@ -28,7 +28,6 @@ export async function findMe() {
       },
       withCredentials: true,
     });
-    console.log(res.data);
 
     if (res.status !== 200) {
       return {

@@ -1,4 +1,4 @@
-"use client"; // For Next.js App Router (Next 13+)
+'use client'; // For Next.js App Router (Next 13+)
 
 import {
   Box,
@@ -20,49 +20,70 @@ import {
   Button,
   ButtonGroup,
   Stack,
-  Divider
-} from "@chakra-ui/react";
-import { useState, useEffect, useCallback } from "react";
-import { SearchIcon } from "@chakra-ui/icons";
-import { debounce } from "lodash"; // Or use a custom debounce function
-import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react'
+  Divider,
+  SimpleGrid,
+  Spinner, // Import Spinner
+  Center, // Import Center for centering elements
+} from '@chakra-ui/react';
+import { useState, useEffect, useCallback } from 'react';
+import { SearchIcon } from '@chakra-ui/icons';
+import { debounce } from 'lodash'; // Or use a custom debounce function
+import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react';
+import { getAllEvent } from '@/api/event';
+import Link from 'next/link';
 
 // Event Interface
 interface Event {
   id: number;
-  title: string;
+  eventName: string;
   imageUrl: string;
   date: string;
   time: string;
   location: string;
+  description: string;
   category: string;
   price: number; // Assuming price in cents/smallest unit
 }
 
-// Event List (Placeholder Data - Replace with actual data)
-const events: Event[] = [
-  // ... (your event data here)
-];
-
-const categories = [...new Set(events.map((event) => event.category))]; // Get unique categories from events
-const locations = [...new Set(events.map((event) => event.location))]; // Get unique locations from events
-
 export default function HeroSection() {
-  const [filteredEvents, setFilteredEvents] = useState<Event[]>(events);
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [events, setEvents] = useState<Event[]>([]);
+  const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const toast = useToast();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
+
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const res = await getAllEvent();
+        if (!res.ok) {
+          throw new Error('Failed to fetch events');
+        }
+        const data = res.data;
+        setEvents(data.data);
+        setFilteredEvents(data.data); // Initialize filteredEvents with fetched data
+      } catch (error) {
+        setError((error as Error).message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvent();
+  }, []);
 
   // Debounced Search Function
   const debouncedSearch = useCallback(
     debounce((query: string) => {
       const filtered = events.filter((event) =>
-        event.title.toLowerCase().includes(query.toLowerCase())
+        event.eventName.toLowerCase().includes(query.toLowerCase()),
       );
       setFilteredEvents(filtered);
     }, 300), // Adjust debounce delay as needed
-    []
+    [events], // Depend on events to update filtered results
   );
 
   // Filter Handling
@@ -75,7 +96,7 @@ export default function HeroSection() {
       return categoryMatch && locationMatch;
     });
     setFilteredEvents(filtered);
-  }, [selectedCategory, selectedLocation]);
+  }, [selectedCategory, selectedLocation, events]);
 
   // Search Handling
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,10 +104,46 @@ export default function HeroSection() {
     setSearchQuery(newQuery);
     debouncedSearch(newQuery);
   };
+
+  // Format Date Function
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString(); // Adjust format as needed
+  };
+
   const numItemsPerRow = useBreakpointValue({ base: 1, md: 2, lg: 3 });
+
+  if (loading) {
+    return (
+      <Center height="100vh">
+        <VStack spacing={4}>
+          <Spinner
+            size="xl"
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+          />
+          <Text fontSize="xl" color="gray.600">
+            Loading events...
+          </Text>
+        </VStack>
+      </Center>
+    );
+  }
+
+  if (error) {
+    return (
+      <Center height="100vh">
+        <Text fontSize="xl" color="red.500">
+          Error: {error}
+        </Text>
+      </Center>
+    );
+  }
+
   return (
     <Box maxW="container.xl" mx="auto" mt={8} p={8}>
-      <Flex mb={8} direction={{ base: "column", md: "row" }} gap={4}>
+      <Flex mb={8} direction={{ base: 'column', md: 'row' }} gap={4}>
         <Input
           placeholder="Search events..."
           value={searchQuery}
@@ -97,58 +154,85 @@ export default function HeroSection() {
           value={selectedCategory || undefined}
           onChange={(e) => setSelectedCategory(e.target.value)}
         >
-          {categories.map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
+          {[...new Set(events.map((event) => event.category))].map(
+            (category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ),
+          )}
         </Select>
         <Select
           placeholder="Filter by Location"
           value={selectedLocation || undefined}
           onChange={(e) => setSelectedLocation(e.target.value)}
         >
-          {locations.map((location) => (
-            <option key={location} value={location}>
-              {location}
-            </option>
-          ))}
+          {[...new Set(events.map((event) => event.location))].map(
+            (location) => (
+              <option key={location} value={location}>
+                {location}
+              </option>
+            ),
+          )}
         </Select>
       </Flex>
 
-      <Card maxW='sm'>
-  <CardBody>
-    <Image
-      src='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-      alt='Green double couch with wooden legs'
-      borderRadius='lg'
-    />
-    <Stack mt='6' spacing='3'>
-      <Heading size='md'>Living room Sofa</Heading>
-      <Text>
-        This sofa is perfect for modern tropical spaces, baroque inspired
-        spaces, earthy toned spaces and for people who love a chic design with a
-        sprinkle of vintage design.
-      </Text>
-      <Text color='blue.600' fontSize='2xl'>
-        $450
-      </Text>
-    </Stack>
-  </CardBody>
-  <Divider />
-  <CardFooter>
-    <ButtonGroup spacing='2'>
-      <Button variant='solid' colorScheme='blue'>
-        Buy now
-      </Button>
-      <Button variant='ghost' colorScheme='blue'>
-        Add to cart
-      </Button>
-    </ButtonGroup>
-  </CardFooter>
-</Card>
-      {/* Pagination */}
-      {/* ... tambahkan logika pagination di sini ... */}
+      <Grid templateColumns={`repeat(${numItemsPerRow}, 1fr)`} gap={6}>
+        {filteredEvents.map((event) => (
+          <GridItem key={event.id}>
+            <Card
+              overflow="hidden"
+              boxShadow="md"
+              transition="transform 0.2s"
+              borderWidth={1}
+              borderRadius="lg"
+              borderColor="gray.200"
+              _hover={{ transform: 'scale(1.05)' }}
+              w="full"
+              h="full"
+            >
+              <Image
+                src={event.imageUrl}
+                alt={event.eventName}
+                borderRadius="lg"
+                mb={2}
+                objectFit="cover"
+                w="full"
+                h="200px"
+              />
+              <CardBody p={4}>
+                <Heading size="md" color="orange.700" my={2}>
+                  {event.eventName}
+                </Heading>
+                <Text fontWeight="bold" mb={1} fontSize="md">
+                  {formatDate(event.date)} / {event.time} - {event.location}
+                </Text>
+                <Text mb={1} fontSize="md">
+                  {event.description}
+                </Text>
+                <Text mb={1} fontSize="md">
+                  {event.category}
+                </Text>
+                <Text color="orange.600" fontWeight="bold" fontSize="md">
+                  {event.price}
+                </Text>
+              </CardBody>
+              <Divider />
+              <CardFooter p={4} bg="orange.50">
+                <ButtonGroup spacing="4">
+                  <Button variant="solid" colorScheme="orange" size="md">
+                    <Link
+                      href={`/transaction?eventId=${event.id}&price=${event.price}`}
+                    >
+                      Buy
+                    </Link>
+                  </Button>
+                </ButtonGroup>
+              </CardFooter>
+            </Card>
+          </GridItem>
+        ))}
+      </Grid>
     </Box>
   );
 }

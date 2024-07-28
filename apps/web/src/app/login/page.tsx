@@ -5,9 +5,8 @@ import {
   Stack,
   Button,
   Center,
-  Alert,
-  AlertIcon,
   Heading,
+  useToast,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -19,7 +18,7 @@ export default function Login() {
   const { fetchUserData } = useUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const toast = useToast();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -43,15 +42,27 @@ export default function Login() {
 
         setCookies('token', result.token);
         await fetchUserData();
-        router.push('/'); // Redirect to a protected page after successful login
+        router.push('/');
         router.refresh();
       } else {
         const errorData = await response.json();
-        setError(errorData.error || 'Invalid email or password');
+        toast({
+          title: 'Error',
+          description: errorData.error || 'Invalid email or password',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
       }
     } catch (error) {
       console.error('Login error:', error);
-      setError('An error occurred during login');
+      toast({
+        title: 'Error',
+        description: 'An error occurred during login',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 
@@ -59,12 +70,6 @@ export default function Login() {
     <Center mt="100px" mb="100px">
       <form onSubmit={handleSubmit}>
         <Stack spacing={3} w="500px">
-          {error && (
-            <Alert status="error">
-              <AlertIcon />
-              {error}
-            </Alert>
-          )}
           <Heading>Login</Heading>
           <Input
             placeholder="Email"

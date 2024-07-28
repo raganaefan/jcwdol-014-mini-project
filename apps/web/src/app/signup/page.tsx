@@ -40,7 +40,7 @@ export default function Signup() {
       email,
       password,
       role,
-      referral: referral || undefined, // include referral code only if it's provided
+      referral: referral || undefined,
     };
 
     try {

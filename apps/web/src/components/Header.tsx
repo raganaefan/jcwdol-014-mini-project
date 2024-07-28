@@ -107,6 +107,27 @@ export default function Header() {
             <Text>Create Event</Text>
           </Link>
         )}
+        {user?.role === 'ORGANIZER' && (
+          <Menu>
+            <MenuButton
+              as={Button}
+              rightIcon={<ChevronDownIcon />}
+              variant="link"
+              color="gray.500"
+              _hover={{ color: 'blue.500' }}
+            >
+              Dashboard
+            </MenuButton>
+            <MenuList>
+              <MenuGroup title="Dashboard">
+                <Link href="/event-dashboard">
+                  <MenuItem>Event Dashboard</MenuItem>
+                </Link>
+                <MenuItem>Transaction Dashboard</MenuItem>
+              </MenuGroup>
+            </MenuList>
+          </Menu>
+        )}
 
         {/* Dropdown Menu */}
         <Menu>
@@ -176,6 +197,30 @@ export default function Header() {
                 <Link href="/create-event">
                   <Text>Create Event</Text>
                 </Link>
+              )}
+              {user?.role === 'ORGANIZER' && (
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    rightIcon={<ChevronDownIcon />}
+                    variant="link"
+                    color="gray.500"
+                    _hover={{ color: 'blue.500' }}
+                  >
+                    Dashboard
+                  </MenuButton>
+                  <MenuList>
+                    <MenuGroup title="Dashboard">
+                      <Link href="/dashboard">
+                        <MenuItem>Help Center</MenuItem>
+                      </Link>
+                      <Link href="/event-dashboard">
+                        <MenuItem>Event Dashboard</MenuItem>
+                      </Link>
+                      <MenuItem>Transaction Dashboard</MenuItem>
+                    </MenuGroup>
+                  </MenuList>
+                </Menu>
               )}
 
               {/* Dropdown Menu */}
