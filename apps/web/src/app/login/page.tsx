@@ -7,11 +7,20 @@ import {
   Center,
   Heading,
   useToast,
+  useColorModeValue,
+  Box,
+  FormLabel,
+  FormControl,
+  Text,
+  Link,
+
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { setCookies } from '@/actions/cookies';
 import { useUser } from '@/context/UserContext';
+import { motion, Transition,  useAnimation, useInView  } from "framer-motion";
+
 
 export default function Login() {
   const router = useRouter();
@@ -20,6 +29,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const toast = useToast();
 
+  const bgColor = useColorModeValue("gray.100", "gray.700");
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -66,28 +76,94 @@ export default function Login() {
     }
   };
 
+
   return (
-    <Center mt="100px" mb="100px">
-      <form onSubmit={handleSubmit}>
-        <Stack spacing={3} w="500px">
-          <Heading>Login</Heading>
-          <Input
-            placeholder="Email"
-            size="md"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Input
-            placeholder="Password"
-            size="md"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Button type="submit">Sign In</Button>
-        </Stack>
-      </form>
+    <Center mt="100px" mb="100px" py={170}   
+    bgImage="url('/images/banana.jpg')" 
+    bgPosition="center"
+    bgSize="cover"
+    bgRepeat="no-repeat">
+      <Box p={8} 
+      filter="auto" 
+      backdropFilter="blur(5px)"  borderRadius="md" boxShadow="lg">
+        <form onSubmit={handleSubmit}>
+          <Stack spacing={4} w={{base:"80%",sm:"80%", md:"400px" }}>
+            <Heading as="h2" size="lg" textAlign="center" color="white">
+              Login
+            </Heading>
+            <FormControl>
+              <FormLabel color="white">Email</FormLabel>
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}   
+
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel color="white">Password</FormLabel>
+              <Input
+                type="password"
+                placeholder="Enter   
+ your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </FormControl>
+            <Button type="submit" 
+            as={motion.button}
+            bgGradient="linear(to-r, orange.300, orange.500, orange.700)"
+            backgroundSize="200% auto"
+            _hover={{
+              backgroundPosition: "right center",
+            }}
+            animate={{
+              backgroundPosition: "left center",
+            }}
+            transition={{
+              repeat: "Infinity",
+              duration: "2s",
+              ease: "linear",
+            }}
+            color="white"
+            fontWeight="bold"
+            px={8}
+            py={4}
+            borderRadius="full">
+              Sign In
+            </Button>
+            <Text color="white">Don't have an account? <Link href="/apps/web/src/app/signup">Sign up</Link></Text>
+          </Stack>
+        </form>
+      </Box>
     </Center>
   );
 }
+
+
+//   return (
+//     <Center mt="100px" mb="100px" py={200}>
+//       <form onSubmit={handleSubmit}>
+//         <Stack spacing={3} w="500px">
+//           <Heading>Login</Heading>
+//           <Input
+//             placeholder="Email"
+//             size="md"
+//             type="email"
+//             value={email}
+//             onChange={(e) => setEmail(e.target.value)}
+//           />
+//           <Input
+//             placeholder="Password"
+//             size="md"
+//             type="password"
+//             value={password}
+//             onChange={(e) => setPassword(e.target.value)}
+//           />
+//           <Button type="submit">Sign In</Button>
+//         </Stack>
+//       </form>
+//     </Center>
+//   );
+// }
