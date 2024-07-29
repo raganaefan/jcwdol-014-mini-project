@@ -52,7 +52,7 @@ export const register = async (req: Request, res: Response) => {
         await prisma.discountCoupon.create({
           data: {
             userId: user.id,
-            discount: 0.1, // 10% discount
+            discount: 0.1,
             expiredAt: expirationDate,
           },
         });
@@ -112,10 +112,4 @@ export const login = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(401).json({ error: 'Invalid credentials' });
   }
-};
-
-export const user = async (req: Request, res: Response) => {
-  const userData = await prisma.user.findMany();
-
-  return res.status(200).send(userData);
 };

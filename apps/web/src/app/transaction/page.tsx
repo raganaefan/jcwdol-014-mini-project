@@ -1,156 +1,3 @@
-// 'use client';
-
-// import {
-//   Box,
-//   Heading,
-//   Text,
-//   VStack,
-//   HStack,
-//   Input,
-//   Button,
-//   Spinner,
-//   Center,
-//   useToast,
-// } from '@chakra-ui/react';
-// import { useState, useEffect, ChangeEvent } from 'react';
-// import { useSearchParams, useRouter } from 'next/navigation';
-// import { getEventById } from '@/api/transaction';
-
-// // Event Interface
-// interface Event {
-//   id: number;
-//   eventName: string;
-//   imageUrl: string;
-//   date: string;
-//   time: string;
-//   location: string;
-//   description: string;
-//   category: string;
-//   price: number;
-// }
-
-// export default function TransactionPage() {
-//   const searchParams = useSearchParams();
-//   const eventId = searchParams.get('eventId');
-//   const router = useRouter();
-//   const toast = useToast();
-
-//   const [event, setEvent] = useState<Event | null>(null);
-//   const [discount, setDiscount] = useState<number>(0);
-//   const [points, setPoints] = useState<number>(0);
-//   const [finalPrice, setFinalPrice] = useState<number>(0);
-
-//   useEffect(() => {
-//     const fetchEvent = async () => {
-//       if (eventId) {
-//         try {
-//           const eventDetails = await getEventById(Number(eventId));
-//           if (!eventDetails || !eventDetails.ok) {
-//             throw new Error('Failed to fetch event details');
-//           }
-//           console.log(eventDetails.data.data);
-//           setEvent(eventDetails.data.data);
-//           setFinalPrice(eventDetails.data.price);
-//         } catch (error) {
-//           toast({
-//             title: 'Error fetching event',
-//             description:
-//               error instanceof Error ? error.message : 'An error occurred',
-//             status: 'error',
-//             duration: 5000,
-//             isClosable: true,
-//           });
-//           router.push('/');
-//         }
-//       }
-//     };
-
-//     fetchEvent();
-//   }, [eventId, router, toast]);
-
-//   useEffect(() => {
-//     if (event) {
-//       const calculateFinalPrice = () => {
-//         const discountedPrice = event.price - discount;
-//         const finalPriceWithPoints = discountedPrice - points;
-//         setFinalPrice(Math.max(finalPriceWithPoints, 0));
-//       };
-
-//       calculateFinalPrice();
-//     }
-//   }, [discount, points, event]);
-
-//   const handleDiscountChange = (e: ChangeEvent<HTMLInputElement>) => {
-//     setDiscount(Number(e.target.value) || 0);
-//   };
-
-//   const handlePointsChange = (e: ChangeEvent<HTMLInputElement>) => {
-//     setPoints(Number(e.target.value) || 0);
-//   };
-
-//   const formatRupiah = (amount: number) => {
-//     if (amount === undefined || amount === null) {
-//       return 'IDR 0';
-//     }
-//     return amount.toLocaleString('id-ID', {
-//       style: 'currency',
-//       currency: 'IDR',
-//     });
-//   };
-
-//   if (!event) {
-//     return (
-//       <Center height="100vh">
-//         <Spinner size="xl" />
-//       </Center>
-//     );
-//   }
-
-//   return (
-//     <Box maxW="container.md" mx="auto" mt={8} p={8}>
-//       <Heading as="h1" mb={4}>
-//         {event.eventName}
-//       </Heading>
-//       <Text fontWeight="bold" mb={1}>
-//         {event.date} / {event.time} - {event.location}
-//       </Text>
-//       <Text mb={4}>{event.description}</Text>
-
-//       <VStack spacing={4} align="stretch">
-//         <HStack>
-//           <Text>Price:</Text>
-//           <Text fontWeight="bold">{formatRupiah(event.price)}</Text>
-//         </HStack>
-//         <HStack>
-//           <Text>Discount:</Text>
-//           <Input
-//             type="number"
-//             placeholder="Enter discount amount in Rupiah"
-//             value={discount}
-//             onChange={handleDiscountChange}
-//           />
-//         </HStack>
-//         <HStack>
-//           <Text>Points:</Text>
-//           <Input
-//             type="number"
-//             placeholder="Enter points to use"
-//             value={points}
-//             onChange={handlePointsChange}
-//           />
-//         </HStack>
-//         <HStack>
-//           <Text>Final Price:</Text>
-//           <Text fontWeight="bold">{formatRupiah(finalPrice)}</Text>
-//         </HStack>
-//         <Button colorScheme="orange" size="md">
-//           Confirm Purchase
-//         </Button>
-//       </VStack>
-//     </Box>
-//   );
-// }
-
 'use client';
 
 import {
@@ -161,6 +8,8 @@ import {
   HStack,
   Button,
   useToast,
+  Center,
+  Spinner,
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -216,7 +65,6 @@ export default function TransactionPage() {
           if (!eventDetails || !eventDetails.ok) {
             throw new Error('Failed to fetch event details');
           }
-          console.log(eventDetails.data.data);
           setEvent(eventDetails.data.data);
           setFinalPrice(eventDetails.data.price);
 
@@ -237,11 +85,12 @@ export default function TransactionPage() {
           duration: 5000,
           isClosable: true,
         });
+        router.push('/login');
       }
     };
 
     fetchEventAndUserDetails();
-  }, [eventId, toast]);
+  }, [eventId, toast, router]);
 
   useEffect(() => {
     if (event) {
@@ -274,7 +123,6 @@ export default function TransactionPage() {
         isClosable: true,
       });
       router.push('/');
-      router.refresh();
     } catch (error) {
       toast({
         title: 'Purchase Failed',
@@ -304,9 +152,19 @@ export default function TransactionPage() {
 
   if (!event) {
     return (
-      <Box>
-        <Text>Loading...</Text>
-      </Box>
+      <Center height="100vh">
+        <VStack spacing={4}>
+          <Spinner
+            size="xl"
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+          />
+          <Text fontSize="xl" color="gray.600">
+            Loading Data...
+          </Text>
+        </VStack>
+      </Center>
     );
   }
 

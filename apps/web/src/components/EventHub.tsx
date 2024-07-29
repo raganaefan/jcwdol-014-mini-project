@@ -17,7 +17,7 @@ function EventHubHero() {
       bgImage="url('./images/banana.jpg')"
       bgSize="cover"
       color="white"
-      py={20}
+      py={200}
       textAlign="center"
     >
       <VStack spacing={8} align="center">

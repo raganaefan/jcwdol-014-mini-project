@@ -53,6 +53,13 @@ export default function Signup() {
       });
 
       if (response.ok) {
+        toast({
+          title: 'Account created.',
+          description: "We've created your account for you.",
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        });
         router.push('/login');
       } else {
         const errorData = await response.json();
@@ -129,20 +136,7 @@ export default function Signup() {
                   value={referral}
                   onChange={(e) => setReferral(e.target.value)}
                 />
-                <Button
-                  type="submit"
-                  onClick={() =>
-                    toast({
-                      title: 'Account created.',
-                      description: "We've created your account for you.",
-                      status: 'success',
-                      duration: 9000,
-                      isClosable: true,
-                    })
-                  }
-                >
-                  Sign Up
-                </Button>
+                <Button type="submit">Sign Up</Button>
               </Stack>
             </form>
           </TabPanel>
@@ -203,20 +197,7 @@ export default function Signup() {
                   value={referral}
                   onChange={(e) => setReferral(e.target.value)}
                 />
-                <Button
-                  type="submit"
-                  onClick={() =>
-                    toast({
-                      title: 'Account created.',
-                      description: "We've created your account for you.",
-                      status: 'success',
-                      duration: 9000,
-                      isClosable: true,
-                    })
-                  }
-                >
-                  Sign Up
-                </Button>
+                <Button type="submit">Sign Up</Button>
               </Stack>
             </form>
           </TabPanel>

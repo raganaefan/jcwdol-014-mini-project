@@ -45,10 +45,8 @@ export default function CreateEvent() {
         formData.append('file', image);
 
         const uploadResponse = await uploadImage(formData);
-        console.log('Upload response:', uploadResponse); // Check this response
         if (uploadResponse.ok) {
           imageUrl = uploadResponse.url;
-          console.log(imageUrl);
         } else {
           throw new Error(uploadResponse.message);
         }
@@ -65,8 +63,6 @@ export default function CreateEvent() {
         availSeats,
         imageUrl,
       });
-
-      console.log('Create event response:', res); // Debugging
 
       if (res.ok) {
         toast({
@@ -106,14 +102,17 @@ export default function CreateEvent() {
 
   return (
     <Box
-      mt="10"
-      mx="20"
-      p="5"
+      mt={{ base: '4', md: '10' }}
+      mx={{ base: '4', md: '20' }}
+      p={{ base: '4', md: '5' }}
       borderWidth="1px"
       borderRadius="lg"
       boxShadow="lg"
     >
-      <Heading mb="6">Create Event</Heading>
+
+      <Heading mb={{ base: '4', md: '6' }} fontSize={{ base: 'xl', md: '2xl' }}>
+        Create Event
+      </Heading>
       <form onSubmit={handleCreateEvent} encType="multipart/form-data">
         <FormControl mb="4" isRequired>
           <FormLabel htmlFor="eventName">Event Name</FormLabel>
@@ -217,7 +216,7 @@ export default function CreateEvent() {
             onChange={handleFileChange}
           />
         </FormControl>
-        <Button colorScheme="orange" type="submit">
+        <Button colorScheme="orange" type="submit" w="full">
           Submit
         </Button>
       </form>

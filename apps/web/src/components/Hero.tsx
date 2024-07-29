@@ -108,10 +108,10 @@ export default function HeroSection() {
   // Format Date Function
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString(); // Adjust format as needed
+    return date.toLocaleDateString();
   };
 
-  const numItemsPerRow = useBreakpointValue({ base: 1, md: 2, lg: 3 });
+  const numItemsPerRow = useBreakpointValue({ base: 1, md: 2, lg: 4 });
 
   if (loading) {
     return (
@@ -143,6 +143,8 @@ export default function HeroSection() {
 
   return (
     <Box maxW="container.xl" mx="auto" mt={8} p={8}>
+      <Heading as="h2" size="4xl" color="orange.500">
+        Explore Events
       <Flex mb={8} direction={{ base: 'column', md: 'row' }} gap={4}>
         <Input
           placeholder="Search events..."
