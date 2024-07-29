@@ -1,7 +1,7 @@
 import express from 'express';
 import {
   createEvent,
-  createTransaction,
+  deleteEvent,
   getEvents,
   getEventsById,
   getEventsByOrganizerId,
@@ -24,9 +24,9 @@ router.get(
   getEventsByOrganizerId,
 );
 router.post('/', verifyToken, OrganizerGuard, createEvent);
-router.post('/transaction', verifyToken, createTransaction);
 router.post('/upload', upload.single('file'), uploadImage);
 router.get('/:id', verifyToken, getEventsById);
-router.put('/update/:id', updateEvent);
+router.put('/update/:id', verifyToken, OrganizerGuard, updateEvent);
+router.delete('/:id', verifyToken, OrganizerGuard, deleteEvent);
 
 export const eventRouter = router;

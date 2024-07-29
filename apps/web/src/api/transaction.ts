@@ -64,8 +64,6 @@ export async function getUserDiscountAndPoints() {
       };
     }
 
-    console.log(res.data);
-
     return {
       ok: true,
       data: res.data,
@@ -91,9 +89,8 @@ export async function purchaseEvent(params: any) {
 
   try {
     const decoded: any = jwt.verify(token, SECRET_KEY);
-    const userId = decoded.id;
     const res = await axios.post(
-      `${API_URL}event/transaction`,
+      `${API_URL}transaction/event`,
       {
         eventId: params.eventId,
         amount: params.amount,
@@ -116,3 +113,53 @@ export async function purchaseEvent(params: any) {
     };
   }
 }
+
+export interface User {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+export interface Event {
+  organizerId: number;
+  eventName: string;
+  category: string;
+}
+
+export interface Transaction {
+  amount: number;
+  createdAt: string;
+  Event: Event;
+  User: User;
+}
+
+export const fetchTransactions = async () => {
+  const token = cookies().get('token')?.value;
+
+  if (!token) {
+    return { ok: false, message: 'Unauthenticated' };
+  }
+
+  try {
+    const decoded: any = jwt.verify(token, SECRET_KEY);
+    const userId = decoded.id;
+    const res = await axios.get<{ data: Transaction[] }>(
+      `${API_URL}transaction/stats/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return {
+      ok: true,
+      data: res.data.data,
+    };
+  } catch (error) {
+    console.error('Error fetching Transaction:', error);
+    return {
+      ok: false,
+      message: 'Failed to get transaction',
+    };
+  }
+};

@@ -16,6 +16,7 @@ import { userRouter } from './routers/user.router';
 import { eventRouter } from './routers/event.route';
 import path from 'path';
 import bodyParser from 'body-parser';
+import { transactionRouter } from './routers/transaction.router';
 
 export default class App {
   private app: Express;
@@ -70,6 +71,7 @@ export default class App {
     this.app.use('/api/auth', authRouter);
     this.app.use('/api/user', userRouter);
     this.app.use('/api/event', eventRouter);
+    this.app.use('/api/transaction', transactionRouter);
   }
 
   public start(): void {

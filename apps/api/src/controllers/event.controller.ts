@@ -28,7 +28,7 @@ export const createEvent = async (req: Request, res: Response) => {
         time,
         availSeats,
         category,
-        imageUrl, // Ensure this is correctly set
+        imageUrl,
         organizer: {
           connect: { id: Number(organizerId) },
         },
@@ -55,7 +55,6 @@ export const uploadImage = (
   }
 
   const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-  console.log('Image uploaded:', imageUrl); // Add this line for debugging
   res.status(200).json({ ok: true, url: imageUrl });
 };
 
@@ -63,24 +62,6 @@ export const getEvents = async (req: Request, res: Response) => {
   try {
     const events = await prisma.event.findMany();
     return res.status(200).send({ ok: true, message: 'success', data: events });
-  } catch (error) {
-    res.status(500).json({ error: (error as Error).message });
-  }
-};
-
-export const createTransaction = async (req: Request, res: Response) => {
-  const { eventId, amount } = req.body;
-  const userId = req.user.id as number;
-
-  try {
-    const transaction = await prisma.transaction.create({
-      data: {
-        eventId,
-        userId,
-        amount,
-      },
-    });
-    res.status(201).json({ ok: true, data: transaction });
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
@@ -138,5 +119,24 @@ export const updateEvent = async (req: Request, res: Response) => {
     res.status(200).json(updatedEvent);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+export const deleteEvent = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    await prisma.transaction.deleteMany({
+      where: { eventId: Number(id) },
+    });
+
+    await prisma.event.delete({
+      where: { id: Number(id) },
+    });
+
+    res.status(200).json({ ok: true });
+  } catch (error) {
+    console.error('Failed to delete event:', error);
+    res.status(500).json({ ok: false, error: 'Internal Server Error' });
   }
 };

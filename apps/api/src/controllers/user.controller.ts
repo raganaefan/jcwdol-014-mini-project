@@ -49,14 +49,14 @@ export default async function getPointDiscount(req: Request, res: Response) {
         discountCoupon: {
           where: {
             expiredAt: {
-              gt: now, // Only include non-expired coupons
+              gt: now,
             },
           },
         },
         PointHistory: {
           where: {
             expiredAt: {
-              gt: now, // Only include non-expired points
+              gt: now,
             },
           },
         },

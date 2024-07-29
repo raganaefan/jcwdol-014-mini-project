@@ -13,7 +13,6 @@ export const uploadImage = async (formData: FormData) => {
         'Content-Type': 'multipart/form-data',
       },
     });
-    console.log('Image upload response:', res.data); // Debugging
     return res.data;
   } catch (error) {
     console.error('Error uploading image:', error);
@@ -43,8 +42,6 @@ export async function createEvent(params: EventParams) {
   try {
     const decoded = jwt.verify(token, SECRET_KEY) as { id: number };
     const userId = decoded.id;
-
-    console.log('Creating event with params:', params); // Debugging
 
     const res = await axios.post(
       `${API_URL}event`,
@@ -157,10 +154,37 @@ export interface Event {
 }
 
 export const updateEvent = async (id: number, event: Event) => {
+  const token = cookies().get('token')?.value;
+  if (!token) {
+    return { ok: false, message: 'Unauthenticated' };
+  }
+
   try {
-    const response = await axios.put(`/api/events/${id}`, event);
+    const response = await axios.put(`${API_URL}event/update/${id}`, event, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return { ok: true, data: response.data };
   } catch (error: any) {
+    return { ok: false, error: error.message };
+  }
+};
+
+export const deleteEvent = async (id: number) => {
+  const token = cookies().get('token')?.value;
+  if (!token) {
+    return { ok: false, message: 'Unauthenticated' };
+  }
+  try {
+    const res = await axios.delete(`${API_URL}event/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
+  } catch (error: any) {
+    console.error(error);
     return { ok: false, error: error.message };
   }
 };

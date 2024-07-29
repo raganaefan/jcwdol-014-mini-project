@@ -17,12 +17,12 @@ function EventHubHero() {
       bgImage="url('./images/banana.jpg')"
       bgSize="cover"
       color="white"
-      py={20}
+      py={200}
       textAlign="center"
     >
       <VStack spacing={8} align="center">
         <Heading as="h4" size="xl">
-          Hi, Welcome to Event<span style={{ color: 'orange' }}>Hub.</span>
+          Hi, Welcome to Event<span style={{ color: 'orange.500' }}>Hub.</span>
         </Heading>
         <Text fontSize="xl">
           {' '}

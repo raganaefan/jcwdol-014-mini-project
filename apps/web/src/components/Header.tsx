@@ -123,7 +123,9 @@ export default function Header() {
                 <Link href="/event-dashboard">
                   <MenuItem>Event Dashboard</MenuItem>
                 </Link>
-                <MenuItem>Transaction Dashboard</MenuItem>
+                <Link href="/transaction-dashboard">
+                  <MenuItem>Transaction Dashboard</MenuItem>
+                </Link>
               </MenuGroup>
             </MenuList>
           </Menu>
@@ -211,13 +213,12 @@ export default function Header() {
                   </MenuButton>
                   <MenuList>
                     <MenuGroup title="Dashboard">
-                      <Link href="/dashboard">
-                        <MenuItem>Help Center</MenuItem>
-                      </Link>
                       <Link href="/event-dashboard">
                         <MenuItem>Event Dashboard</MenuItem>
                       </Link>
-                      <MenuItem>Transaction Dashboard</MenuItem>
+                      <Link href="/transaction-dashboard">
+                        <MenuItem>Transaction Dashboard</MenuItem>
+                      </Link>
                     </MenuGroup>
                   </MenuList>
                 </Menu>

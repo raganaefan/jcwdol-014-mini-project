@@ -1,4 +1,3 @@
-// pages/Events.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -23,7 +22,7 @@ import {
   Text,
   Button,
 } from '@chakra-ui/react';
-import { getEventByOrganizerId, updateEvent } from '@/api/event';
+import { deleteEvent, getEventByOrganizerId, updateEvent } from '@/api/event';
 import React from 'react';
 import { Bar, Line } from 'react-chartjs-2';
 import {
@@ -109,6 +108,18 @@ export default function Events() {
         ),
       );
       setIsEditModalOpen(false);
+    } catch (error) {
+      setError((error as Error).message);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      const res = await deleteEvent(id);
+      if (!res.ok) {
+        throw new Error('Failed to delete event');
+      }
+      setEvents((prev) => prev.filter((event) => event.id !== id));
     } catch (error) {
       setError((error as Error).message);
     }
@@ -207,12 +218,17 @@ export default function Events() {
   // Format Date Function
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString(); // Adjust format as needed
+    return date.toLocaleDateString();
   };
 
   return (
     <div>
-      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10} mx="20" my="10">
+      <SimpleGrid
+        columns={{ base: 1, md: 2 }}
+        spacing={10}
+        mx={{ base: 4, md: 20 }}
+        my={{ base: 4, md: 10 }}
+      >
         <Box p={5} shadow="md" borderWidth="1px">
           <Stat>
             <StatLabel>Total Events Created</StatLabel>
@@ -227,63 +243,74 @@ export default function Events() {
         </Box>
       </SimpleGrid>
       <SimpleGrid
-        templateColumns="repeat(auto-fill, minmax(500px, 1fr))"
-        mx="10"
+        columns={{ base: 1, md: 2 }}
+        spacing={10}
+        mx={{ base: 4, md: 10 }}
       >
-        <Box w="500px">
-          <Heading as="h3" ml="10" mt="10">
+        <Box>
+          <Heading as="h3" ml={{ base: 0, md: 10 }} mt="10">
             Event Prices
           </Heading>
           <Bar data={priceData} options={priceOptions} />
         </Box>
-        <Box w="500px">
-          <Heading as="h3" ml="10" mt="10">
+        <Box>
+          <Heading as="h3" ml={{ base: 0, md: 10 }} mt="10">
             Events by Date
           </Heading>
           <Line data={eventData} options={eventOptions} />
         </Box>
       </SimpleGrid>
-      <Heading as="h3" ml="10" mt="10">
+      <Heading as="h3" ml={{ base: 4, md: 10 }} mt="10">
         Your List of Events
       </Heading>
-      <hr />
-      <Table mt="10">
-        <Thead>
-          <Tr>
-            <Th>ID</Th>
-            <Th>Name</Th>
-            <Th>Description</Th>
-            <Th>Category</Th>
-            <Th>Location</Th>
-            <Th>Date</Th>
-            <Th>Time</Th>
-            <Th>Price</Th>
-            <Th>Edit</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {events.map((event) => (
-            <Tr key={event.id}>
-              <Td>{event.id}</Td>
-              <Td>{event.eventName}</Td>
-              <Td>{event.description}</Td>
-              <Td>{event.category}</Td>
-              <Td>{event.location}</Td>
-              <Td>{formatDate(event.date)}</Td>
-              <Td>{event.time}</Td>
-              <Td>IDR {event.price}</Td>
-              <Td>
-                <Button
-                  colorScheme="blue"
-                  onClick={() => handleEditClick(event)}
-                >
-                  Edit
-                </Button>
-              </Td>
+      <Box overflowX="auto" mx={{ base: 4, md: 10 }}>
+        <Table mt="10">
+          <Thead>
+            <Tr>
+              <Th>ID</Th>
+              <Th>Name</Th>
+              <Th>Description</Th>
+              <Th>Category</Th>
+              <Th>Location</Th>
+              <Th>Date</Th>
+              <Th>Time</Th>
+              <Th>Price</Th>
+              <Th>Edit</Th>
+              <Th>Delete</Th>
             </Tr>
-          ))}
-        </Tbody>
-      </Table>
+          </Thead>
+          <Tbody>
+            {events.map((event) => (
+              <Tr key={event.id}>
+                <Td>{event.id}</Td>
+                <Td>{event.eventName}</Td>
+                <Td>{event.description}</Td>
+                <Td>{event.category}</Td>
+                <Td>{event.location}</Td>
+                <Td>{formatDate(event.date)}</Td>
+                <Td>{event.time}</Td>
+                <Td>IDR {event.price}</Td>
+                <Td>
+                  <Button
+                    colorScheme="blue"
+                    onClick={() => handleEditClick(event)}
+                  >
+                    Edit
+                  </Button>
+                </Td>
+                <Td>
+                  <Button
+                    colorScheme="red"
+                    onClick={() => handleDelete(event.id)}
+                  >
+                    Delete
+                  </Button>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </Box>
       {selectedEvent && (
         <EditEventModal
           isOpen={isEditModalOpen}
