@@ -109,6 +109,7 @@ export default function CreateEvent() {
       borderRadius="lg"
       boxShadow="lg"
     >
+
       <Heading mb={{ base: '4', md: '6' }} fontSize={{ base: 'xl', md: '2xl' }}>
         Create Event
       </Heading>

@@ -124,7 +124,6 @@ export default function Events() {
       setError((error as Error).message);
     }
   };
-
   if (loading) {
     return (
       <Center height="100vh">
@@ -253,6 +252,7 @@ export default function Events() {
           </Heading>
           <Bar data={priceData} options={priceOptions} />
         </Box>
+
         <Box>
           <Heading as="h3" ml={{ base: 0, md: 10 }} mt="10">
             Events by Date

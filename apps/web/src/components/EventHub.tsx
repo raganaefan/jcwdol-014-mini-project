@@ -22,7 +22,7 @@ function EventHubHero() {
     >
       <VStack spacing={8} align="center">
         <Heading as="h4" size="xl">
-          Hi, Welcome to Event<span style={{ color: 'orange.500' }}>Hub.</span>
+          Hi, Welcome to Event<span style={{ color: 'orange' }}>Hub.</span>
         </Heading>
         <Text fontSize="xl">
           {' '}

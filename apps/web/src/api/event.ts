@@ -139,6 +139,66 @@ export async function getEvent() {
       message: 'Failed to get event',
     };
   }
+
+  try {
+    const decoded: any = jwt.verify(token, SECRET_KEY);
+    const userId = decoded.id;
+    const res = await axios.get(`${API_URL}event/organizer/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return {
+      ok: true,
+      data: res.data,
+    };
+  } catch (error) {
+    console.error('Error getting event:', error);
+    return {
+      ok: false,
+      message: 'Failed to get event',
+    };
+  }
+}
+
+export async function getEvent() {
+  const token = cookies().get('token')?.value;
+
+  if (!token) {
+    return { ok: false, message: 'Unauthenticated' };
+  }
+
+  try {
+    const decoded: any = jwt.verify(token, SECRET_KEY);
+    const userId = decoded.id;
+    const res = await axios.get(`${API_URL}event`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return {
+      ok: true,
+      data: res.data,
+    };
+  } catch (error) {
+    console.error('Error getting event:', error);
+    return {
+      ok: false,
+      message: 'Failed to get event',
+    };
+  }
+}
+
+export interface Event {
+  id: number;
+  eventName: string;
+  imageUrl: string;
+  date: string;
+  time: string;
+  location: string;
+  description: string;
+  category: string;
+  price: number;
 }
 
 export interface Event {
@@ -188,3 +248,4 @@ export const deleteEvent = async (id: number) => {
     return { ok: false, error: error.message };
   }
 };
+

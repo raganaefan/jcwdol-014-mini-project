@@ -145,7 +145,6 @@ export default function HeroSection() {
     <Box maxW="container.xl" mx="auto" mt={8} p={8}>
       <Heading as="h2" size="4xl" color="orange.500">
         Explore Events
-      </Heading>
       <Flex mb={8} direction={{ base: 'column', md: 'row' }} gap={4}>
         <Input
           placeholder="Search events..."
