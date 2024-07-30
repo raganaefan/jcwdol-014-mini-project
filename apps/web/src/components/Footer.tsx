@@ -99,4 +99,3 @@ function Footer() {
 
 export default Footer;
 
-// "use client"; 

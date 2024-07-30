@@ -212,7 +212,7 @@ export default function Events() {
 
   return (
     <div >
-      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10} mx="20" my="10" py={200}>
+      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10} mx="20" my="10" py={500}>
         <Box p={5} shadow="md" borderWidth="1px">
           <Stat>
             <StatLabel>Total Events Created</StatLabel>

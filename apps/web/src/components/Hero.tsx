@@ -22,8 +22,8 @@ import {
   Stack,
   Divider,
   SimpleGrid,
-  Spinner, // Import Spinner
-  Center, // Import Center for centering elements
+  Spinner,
+  Center, 
 } from '@chakra-ui/react';
 import { useState, useEffect, useCallback } from 'react';
 import { SearchIcon } from '@chakra-ui/icons';
@@ -42,7 +42,7 @@ interface Event {
   location: string;
   description: string;
   category: string;
-  price: number; // Assuming price in cents/smallest unit
+  price: number; 
 }
 
 export default function HeroSection() {
@@ -54,6 +54,8 @@ export default function HeroSection() {
   const toast = useToast();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const eventsPerPage = 6; // Jumlah event per halaman
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -141,15 +143,13 @@ export default function HeroSection() {
     );
   }
 
-  function ReviewHeader() {
-    return (
-      <Box py={900}> {/* Menambahkan padding vertikal untuk jarak */}
-        <Heading as="h2" size="xl" textAlign="center" mb={8}>
-          Review pengguna EventHub
-        </Heading>
-      </Box>
-    );
-  }
+  const indexOfLastEvent = currentPage * eventsPerPage;
+  const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
+  const currentEvents = filteredEvents.slice(indexOfFirstEvent, indexOfLastEvent);
+
+  const totalPages = Math.ceil(filteredEvents.length / eventsPerPage);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
     <Box maxW="container.xl" mx="auto" mt={8} p={8}>
@@ -212,7 +212,7 @@ export default function HeroSection() {
               />
               <CardBody p={4}>
                 <Heading size="md" color="orange.700" my={2}>
-                  {event.eventName}
+                  <Link href={`/pagination?eventId=${event.id}`}>{event.eventName}</Link>
                 </Heading>
                 <Text fontWeight="bold" mb={1} fontSize="md">
                   {formatDate(event.date)} / {event.time} - {event.location}
@@ -243,6 +243,21 @@ export default function HeroSection() {
           </GridItem>
         ))}
       </Grid>
+
+      <Flex justifyContent="center" mt={8}>
+        <HStack spacing={4}>
+          {Array.from({ length: totalPages }, (_, index) => (
+            <Button
+              key={index + 1}
+              onClick={() => paginate(index + 1)}
+              variant={currentPage === index + 1 ? 'solid' : 'outline'}
+              colorScheme="orange"
+            >
+              {index + 1}
+            </Button>
+          ))}
+        </HStack>
+      </Flex>
     </Box>
   );
 }
