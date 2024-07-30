@@ -91,6 +91,9 @@ function EventCategories() {
 
   return (
     <Box bg={bgColor} p={8} px={{ base: 4, md: 120 }}>
+       <Heading as="h2" size="2xl" textAlign="center" mb={6}>
+        Event Categories
+      </Heading>
       <SimpleGrid columns={numColumns} spacing={4}> {/* Apply responsiveness to columns */}
         {categoryData.map((category) => (
           <CategoryCard key={category.name} category={category} />

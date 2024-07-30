@@ -1,5 +1,8 @@
-'use client'; // For Next.js App Router (Next 13+)
+"use client";
 
+import React, { useEffect, useState, useCallback } from 'react';
+import { useRouter } from 'next/router';
+import { getEventById, getAllEvent, Event as EventType } from '../api/event';
 import {
   Box,
   Heading,
@@ -21,29 +24,17 @@ import {
   Center,
   Input,
 } from '@chakra-ui/react';
-import { useState, useEffect, useCallback } from 'react';
-import { SearchIcon } from '@chakra-ui/icons';
+import { SearchIcon, Icon } from '@chakra-ui/icons';
 import { debounce } from 'lodash';
 import { Card, CardBody, CardFooter } from '@chakra-ui/react';
-import { getAllEvent } from '@/api/event';
 import Link from 'next/link';
 
-// Event Interface
-interface Event {
-  id: number;
-  eventName: string;
-  imageUrl: string;
-  date: string;
-  time: string;
-  location: string;
-  description: string;
-  category: string;
-  price: number; 
-}
-
-export default function HeroSection() {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
+const EventPage = () => {
+  const router = useRouter();
+  const { eventId } = router.query;
+  const [event, setEvent] = useState<EventType | null>(null);
+  const [events, setEvents] = useState<EventType[]>([]);
+  const [filteredEvents, setFilteredEvents] = useState<EventType[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
@@ -55,15 +46,31 @@ export default function HeroSection() {
   const itemsPerPage = 3; // Number of events per page
 
   useEffect(() => {
-    const fetchEvent = async () => {
+    if (eventId) {
+      getEventById(Number(eventId))
+        .then(response => {
+          if (response.ok) {
+            setEvent(response.data);
+          } else {
+            console.error(response.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching event data:', error);
+        });
+    }
+  }, [eventId]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
       try {
         const res = await getAllEvent();
         if (!res.ok) {
           throw new Error('Failed to fetch events');
         }
         const data = res.data;
-        setEvents(data.data);
-        setFilteredEvents(data.data); // Initialize filteredEvents with fetched data
+        setEvents(data);
+        setFilteredEvents(data); // Initialize filteredEvents with fetched data
       } catch (error) {
         setError((error as Error).message);
       } finally {
@@ -71,7 +78,7 @@ export default function HeroSection() {
       }
     };
 
-    fetchEvent();
+    fetchEvents();
   }, []);
 
   // Debounced Search Function
@@ -156,68 +163,64 @@ export default function HeroSection() {
   }
 
   return (
-    <Box maxW="container.xl" mx="auto" mt={8} p={8}>
-        <Heading as="h2" size="2xl" mb={6} textAlign="center">
-        Explore Events
-      </Heading>
-      <Flex mb={8} direction={{ base: 'column', md: 'row' }} gap={4}>
+    <div>
+      {event ? (
+        <Box p={4}>
+          <Heading size="lg" color="orange.700" my={2}>
+            {event.eventName}
+          </Heading>
+          <Image src={event.imageUrl} alt={event.eventName} />
+          <Text fontWeight="bold" mb={1} fontSize="md">
+            {formatDate(event.date)} / {event.time} - {event.location}
+          </Text>
+          <Text mb={1} fontSize="md">
+            {event.description}
+          </Text>
+          <Text mb={1} fontSize="md">
+            {event.category}
+          </Text>
+          <Text color="orange.600" fontWeight="bold" fontSize="md">
+            {event.price}
+          </Text>
+          <ButtonGroup spacing="4">
+            <Button variant="solid" colorScheme="orange" size="md">
+              <Link href={`/transaction?eventId=${event.id}&price=${event.price}`}>Buy</Link>
+            </Button>
+          </ButtonGroup>
+        </Box>
+      ) : (
+        <Box p={4}>
+          <Text>Loading event details...</Text>
+        </Box>
+      )}
+      <Divider />
+      <Box p={4}>
         <Input
           placeholder="Search events..."
           value={searchQuery}
           onChange={handleSearchChange}
+          mb={4}
+          size="lg"
+          icon={<SearchIcon />}
         />
         <Select
-          placeholder="Filter by Category"
-          value={selectedCategory || undefined}
+          placeholder="Select category"
           onChange={(e) => setSelectedCategory(e.target.value)}
+          mb={4}
         >
-          {[...new Set(events.map((event) => event.category))].map(
-            (category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ),
-          )}
+          {/* Add your categories here */}
         </Select>
         <Select
-          placeholder="Filter by Location"
-          value={selectedLocation || undefined}
+          placeholder="Select location"
           onChange={(e) => setSelectedLocation(e.target.value)}
+          mb={4}
         >
-          {[...new Set(events.map((event) => event.location))].map(
-            (location) => (
-              <option key={location} value={location}>
-                {location}
-              </option>
-            ),
-          )}
+          {/* Add your locations here */}
         </Select>
-      </Flex>
-
-      <Grid templateColumns={`repeat(${numItemsPerRow}, 1fr)`} gap={6}>
-        {currentEvents.map((event) => (
-          <GridItem key={event.id}>
-            <Card
-              overflow="hidden"
-              boxShadow="md"
-              transition="transform 0.2s"
-              borderWidth={1}
-              borderRadius="lg"
-              borderColor="gray.200"
-              _hover={{ transform: 'scale(1.05)' }}
-              w="full"
-              h="full"
-            >
-              <Image
-                src={event.imageUrl}
-                alt={event.eventName}
-                borderRadius="lg"
-                mb={2}
-                objectFit="cover"
-                w="full"
-                h="200px"
-              />
-              <CardBody p={4}>
+        <SimpleGrid columns={numItemsPerRow} spacing={4}>
+          {currentEvents.map((event) => (
+            <Card key={event.id}>
+              <CardBody>
                 <Heading size="md" color="orange.700" my={2}>
                   <Link href={`/event?eventId=${event.id}`}>{event.eventName}</Link>
                 </Heading>
@@ -234,35 +237,30 @@ export default function HeroSection() {
                   {event.price}
                 </Text>
               </CardBody>
-              <Divider />
-              <CardFooter p={4} bg="orange.50">
+              <CardFooter>
                 <ButtonGroup spacing="4">
                   <Button variant="solid" colorScheme="orange" size="md">
-                    <Link
-                      href={`/transaction?eventId=${event.id}&price=${event.price}`}
-                    >
-                      Buy
-                    </Link>
+                    <Link href={`/transaction?eventId=${event.id}&price=${event.price}`}>Buy</Link>
                   </Button>
                 </ButtonGroup>
               </CardFooter>
             </Card>
-          </GridItem>
-        ))}
-      </Grid>
-
-      <Flex mt={8} justify="space-between">
-        <Button onClick={handlePrevious} isDisabled={currentPage === 1}>
-          Previous
-        </Button>
-        <Text alignSelf="center">{`Page ${currentPage} of ${numPages}`}</Text>
-        <Button onClick={handleNext} isDisabled={currentPage === numPages}>
-          Next
-        </Button>
-      </Flex>
-    </Box>
+          ))}
+        </SimpleGrid>
+        <Flex justifyContent="space-between" mt={4}>
+          <Button onClick={handlePrevious} isDisabled={currentPage === 1}>
+            Previous
+          </Button>
+          <Text>
+            Page {currentPage} of {numPages}
+          </Text>
+          <Button onClick={handleNext} isDisabled={currentPage === numPages}>
+            Next
+          </Button>
+        </Flex>
+      </Box>
+    </div>
   );
-}
+};
 
-
-
+export default EventPage;
