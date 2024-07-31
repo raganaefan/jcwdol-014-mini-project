@@ -36,6 +36,7 @@ model User {
   discountCoupon DiscountCoupon[]
   PointHistory  PointHistory[]
   Transaction Transaction[]
+  Review      Review[]
 
 
   @@map("users")
@@ -57,6 +58,7 @@ model Event {
   updatedAt   DateTime @updatedAt
   availSeats  Int
   Transaction Transaction[]
+  Review      Review[]
 
   @@map("events")
 }
@@ -100,6 +102,19 @@ model Transaction {
   User      User     @relation(fields: [userId], references: [id])
 
   @@map("transactions")
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  eventId   Int
+  rating    Int      @default(0)
+  comment   String
+  createdAt DateTime @default(now())
+  User      User     @relation(fields: [userId], references: [id])
+  Event     Event    @relation(fields: [eventId], references: [id])
+
+  @@map("reviews")
 }
 
 enum Role {

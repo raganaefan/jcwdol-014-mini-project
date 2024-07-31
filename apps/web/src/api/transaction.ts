@@ -131,6 +131,7 @@ export interface Transaction {
   createdAt: string;
   Event: Event;
   User: User;
+  id: number;
 }
 
 export const fetchTransactions = async () => {
@@ -161,5 +162,85 @@ export const fetchTransactions = async () => {
       ok: false,
       message: 'Failed to get transaction',
     };
+  }
+};
+
+export const getUserTransactions = async () => {
+  const token = cookies().get('token')?.value;
+
+  if (!token) {
+    console.log('Token not found');
+    return { ok: false, message: 'Unauthenticated' };
+  }
+
+  try {
+    const decoded: any = jwt.verify(token, SECRET_KEY);
+    const userId = decoded.id;
+
+    const res = await axios.get<{ data: Transaction[] }>(
+      `${API_URL}transaction/user-transaction/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    return {
+      ok: true,
+      data: res.data.data,
+    };
+  } catch (error) {
+    console.error('Error fetching transactions:', error);
+
+    if (axios.isAxiosError(error) && error.response) {
+      // Log the error response
+      console.error('API Response Error:', error.response.data);
+    }
+
+    return {
+      ok: false,
+      message: 'Failed to get transaction',
+    };
+  }
+};
+
+export const submitReview = async (
+  eventId: number,
+  rating: number,
+  comment: string,
+) => {
+  const token = cookies().get('token')?.value;
+
+  if (!token) {
+    return { ok: false, message: 'Unauthenticated' };
+  }
+
+  try {
+    const decoded: any = jwt.verify(token, SECRET_KEY);
+    const res = await axios.post(
+      `${API_URL}transaction/reviews`,
+      {
+        eventId,
+        rating,
+        comment,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    if (res.data.ok) {
+      return { ok: true, data: res.data.data };
+    } else {
+      return {
+        ok: false,
+        message: res.data.message || 'Failed to submit review',
+      };
+    }
+  } catch (error) {
+    console.error('Error submitting review:', error);
+    return { ok: false, message: 'An error occurred' };
   }
 };

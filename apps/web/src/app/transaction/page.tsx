@@ -169,7 +169,7 @@ export default function TransactionPage() {
   }
 
   return (
-    <Box maxW="container.md" mx="auto" mt={8} p={8}>
+    <Box maxW="container.md" mx="auto" mt={8} p={8} py="150">
       <Heading as="h1" mb={4}>
         {event.eventName}
       </Heading>

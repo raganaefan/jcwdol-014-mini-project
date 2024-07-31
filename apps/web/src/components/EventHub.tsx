@@ -17,12 +17,13 @@ function EventHubHero() {
       bgImage="url('./images/banana.jpg')"
       bgSize="cover"
       color="white"
+      my={50}
       py={200}
       textAlign="center"
     >
       <VStack spacing={8} align="center">
-        <Heading as="h4" size="xl">
-          Hi, Welcome to Event<span style={{ color: 'orange.500' }}>Hub.</span>
+        <Heading as="h2" size="2xl">
+          Hi, Welcome to Event<span style={{ color: 'orange' }}>Hub.</span>
         </Heading>
         <Text fontSize="xl">
           {' '}
@@ -35,20 +36,37 @@ function EventHubHero() {
           </Text>{' '}
           Your Search
         </Text>
-        <Text mx="auto" maxWidth="650px">
-          <strong>EventHub</strong> is your one-stop platform to discover and
-          experience exciting events near you. Whether you re into music
-          festivals, art exhibitions, workshops, or parties, EventHub makes it
-          easy to find events that match your interests. With a user-friendly
-          interface and powerful search filters, you can quickly browse through
-          a wide range of upcoming events, view detailed information, and even
-          purchase tickets directly through the platform. Never miss out on the
-          fun again - let EventHub be your guide to a vibrant social life!
+        <Text mx="auto" maxWidth={{ base: '80%', md: '650px' }}>
+          <strong style={{ fontSize: '1.5em' }}>EventHub</strong> adalah
+          platform satu-stop Anda untuk menemukan dan mengalami acara yang
+          menggembirakan di dekat Anda. Apakah Anda suka
+          <Text as="span" color="gray.200">
+            festival musik
+          </Text>
+          ,{' '}
+          <Text as="span" color="yellow.200">
+            pameran seni
+          </Text>
+          ,{' '}
+          <Text as="span" color="pink.200">
+            workshop
+          </Text>
+          , atau{' '}
+          <Text as="span" color="blue.200">
+            pesta
+          </Text>
+          , EventHub membuatnya mudah untuk menemukan acara yang sesuai dengan
+          minat Anda. Dengan antarmuka yang ramah pengguna dan filter pencarian
+          yang kuat, Anda dapat dengan cepat menjelajahi berbagai acara yang
+          akan datang, melihat informasi detail, dan bahkan membeli tiket
+          langsung melalui platform. Jangan pernah ketinggalan kesenangan lagi -
+          biarkan EventHub menjadi panduan Anda untuk hidup sosial yang
+          berwarna!
         </Text>
 
         <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
           <Link href="/find-events">
-            <Button colorScheme="orange" size="lg">
+            <Button bg="black" colorScheme="white" size="lg">
               Find Your Event Now!
             </Button>
           </Link>

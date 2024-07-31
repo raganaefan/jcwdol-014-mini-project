@@ -14,11 +14,24 @@ import {
   Button,
   useToast,
   Heading,
+  Center,
 } from '@chakra-ui/react';
+import { VStack, useColorModeValue, Image } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createEvent, uploadImage } from '@/api/event';
 
+interface FormData {
+  eventName: string;
+  description: string;
+  price: number;
+  date: string;
+  time: string;
+  location: string;
+  category: string;
+  availSeats: number;
+  image: File | null;
+}
 export default function CreateEvent() {
   const [eventName, setEventName] = useState('');
   const [description, setDescription] = useState('');
@@ -31,6 +44,7 @@ export default function CreateEvent() {
   const [image, setImage] = useState<File | null>(null);
   const toast = useToast();
   const router = useRouter();
+  const bg = useColorModeValue('gray.50', 'gray.700');
 
   const handleCreateEvent = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -45,6 +59,7 @@ export default function CreateEvent() {
         formData.append('file', image);
 
         const uploadResponse = await uploadImage(formData);
+
         if (uploadResponse.ok) {
           imageUrl = uploadResponse.url;
         } else {
@@ -101,124 +116,146 @@ export default function CreateEvent() {
   };
 
   return (
-    <Box
-      mt={{ base: '4', md: '10' }}
-      mx={{ base: '4', md: '20' }}
-      p={{ base: '4', md: '5' }}
-      borderWidth="1px"
-      borderRadius="lg"
-      boxShadow="lg"
+    <Center
+      mt="100px"
+      mb="100px"
+      py={150}
+      px={{ base: 4, md: 8 }}
+      bgImage="url('/images/banana.jpg')"
+      bgPosition="center"
+      bgSize="cover"
+      bgRepeat="no-repeat"
     >
-      <Heading mb={{ base: '4', md: '6' }} fontSize={{ base: 'xl', md: '2xl' }}>
-        Create Event
-      </Heading>
-      <form onSubmit={handleCreateEvent} encType="multipart/form-data">
-        <FormControl mb="4" isRequired>
-          <FormLabel htmlFor="eventName">Event Name</FormLabel>
-          <Input
-            id="eventName"
-            placeholder="Event Name"
-            size="md"
-            type="text"
-            value={eventName}
-            onChange={(e) => setEventName(e.target.value)}
-          />
-        </FormControl>
-        <FormControl mb="4" isRequired>
-          <FormLabel htmlFor="description">Event Description</FormLabel>
-          <Textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Put Description here"
-            size="md"
-            id="description"
-          />
-        </FormControl>
-        <FormControl mb="4" isRequired>
-          <FormLabel htmlFor="price">Price</FormLabel>
-          <NumberInput
-            step={5000}
-            defaultValue={10000}
-            min={0}
-            id="price"
-            value={price}
-            onChange={(valueString) => setPrice(parseInt(valueString))}
-          >
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-        </FormControl>
-        <FormControl mb="4" isRequired>
-          <FormLabel htmlFor="date">Date</FormLabel>
-          <Input
-            type="date"
-            id="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-        </FormControl>
-        <FormControl mb="4" isRequired>
-          <FormLabel htmlFor="time">Time</FormLabel>
-          <Input
-            type="time"
-            id="time"
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
-          />
-        </FormControl>
-        <FormControl mb="4" isRequired>
-          <FormLabel htmlFor="location">Location</FormLabel>
-          <Input
-            id="location"
-            placeholder="Event Location"
-            size="md"
-            type="text"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-          />
-        </FormControl>
-        <FormControl mb="4" isRequired>
-          <FormLabel htmlFor="category">Category</FormLabel>
-          <Input
-            id="category"
-            placeholder="Event Category"
-            size="md"
-            type="text"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          />
-        </FormControl>
-        <FormControl mb="4" isRequired>
-          <FormLabel htmlFor="availSeats">Available Seats</FormLabel>
-          <NumberInput
-            min={0}
-            id="availSeats"
-            value={availSeats}
-            onChange={(valueString) => setAvailSeats(parseInt(valueString))}
-          >
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-        </FormControl>
-        <FormControl mb="4">
-          <FormLabel htmlFor="image">Event Image</FormLabel>
-          <Input
-            type="file"
-            id="image"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-        </FormControl>
-        <Button colorScheme="orange" type="submit" w="full">
-          Submit
-        </Button>
-      </form>
-    </Box>
+      <Box
+        p={8}
+        borderWidth={1}
+        borderRadius="md"
+        boxShadow="md"
+        w={{ base: '90%', sm: '80%', md: '500px' }}
+        bg={bg}
+      >
+        <Heading mb={4}>Create Event</Heading>
+        <form onSubmit={handleCreateEvent} encType="multipart/form-data">
+          <VStack spacing={4} align="stretch">
+            <FormControl mb="4" isRequired>
+              <FormLabel htmlFor="eventName">Event Name</FormLabel>
+              <Input
+                id="eventName"
+                placeholder="Event Name"
+                size="md"
+                type="text"
+                value={eventName}
+                onChange={(e) => setEventName(e.target.value)}
+              />
+            </FormControl>
+            <FormControl mb="4" isRequired>
+              <FormLabel htmlFor="description">Event Description</FormLabel>
+              <Textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Put Description here"
+                size="md"
+                id="description"
+              />
+            </FormControl>
+            <FormControl mb="4" isRequired>
+              <FormLabel htmlFor="price">Price</FormLabel>
+              <NumberInput
+                step={5000}
+                defaultValue={10000}
+                min={0}
+                id="price"
+                value={price}
+                onChange={(valueString) => setPrice(parseInt(valueString))}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </FormControl>
+            <FormControl mb="4" isRequired>
+              <FormLabel htmlFor="date">Date</FormLabel>
+              <Input
+                type="date"
+                id="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
+            </FormControl>
+            <FormControl mb="4" isRequired>
+              <FormLabel htmlFor="time">Time</FormLabel>
+              <Input
+                type="time"
+                id="time"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+              />
+            </FormControl>
+            <FormControl mb="4" isRequired>
+              <FormLabel htmlFor="location">Location</FormLabel>
+              <Input
+                id="location"
+                placeholder="Event Location"
+                size="md"
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+              />
+            </FormControl>
+            <FormControl mb="4" isRequired>
+              <FormLabel htmlFor="category">Category</FormLabel>
+              <Input
+                id="category"
+                placeholder="Event Category"
+                size="md"
+                type="text"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              />
+            </FormControl>
+            <FormControl mb="4" isRequired>
+              <FormLabel htmlFor="availSeats">Available Seats</FormLabel>
+              <NumberInput
+                min={0}
+                id="availSeats"
+                value={availSeats}
+                onChange={(valueString) => setAvailSeats(parseInt(valueString))}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </FormControl>
+            <FormControl mb="4">
+              <FormLabel htmlFor="image">Event Image</FormLabel>
+              <Input
+                type="file"
+                id="image"
+                accept="image/*"
+                onChange={handleFileChange}
+              />
+            </FormControl>
+            {/* Image Preview */}
+            {/* {formData.image && (
+              <Image
+                src={URL.createObjectURL(formData.image)}
+                alt="Event Preview"
+                maxH="200px"
+                objectFit="cover"
+                mb={4}
+              />
+            )}  */}
+
+            <Button colorScheme="orange" type="submit">
+              Submit
+            </Button>
+          </VStack>
+        </form>
+      </Box>
+    </Center>
   );
 }

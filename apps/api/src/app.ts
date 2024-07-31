@@ -15,7 +15,6 @@ import { authRouter } from './routers/auth.router';
 import { userRouter } from './routers/user.router';
 import { eventRouter } from './routers/event.route';
 import path from 'path';
-import bodyParser from 'body-parser';
 import { transactionRouter } from './routers/transaction.router';
 
 export default class App {
@@ -32,7 +31,6 @@ export default class App {
     this.app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
     this.app.use(json());
     this.app.use(cookieParser());
-    this.app.use(bodyParser.json());
     this.app.use(urlencoded({ extended: true }));
     this.app.use(express.static(path.join(__dirname, '../public')));
   }

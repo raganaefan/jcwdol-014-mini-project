@@ -188,7 +188,7 @@ export default function TransactionDashboard() {
   };
 
   return (
-    <Box p={{ base: 4, md: 10 }}>
+    <Box p={{ base: 4, md: 10 }} mt="100">
       <Heading as="h1" mb={5}>
         Transaction Dashboard
       </Heading>

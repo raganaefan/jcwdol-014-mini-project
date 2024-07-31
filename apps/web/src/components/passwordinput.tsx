@@ -21,6 +21,8 @@ export default function PasswordInput({
         pr="4.5rem"
         type={show ? 'text' : 'password'}
         placeholder="Enter password"
+        _placeholder={{ color: 'white' }}
+        color="white"
         id={id}
         value={value}
         onChange={onChange}

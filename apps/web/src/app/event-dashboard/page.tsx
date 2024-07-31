@@ -37,6 +37,7 @@ import {
   Legend,
 } from 'chart.js';
 import EditEventModal from '@/components/EditEvent';
+import DeleteEventModal from '@/components/DeleteEventModal';
 
 ChartJS.register(
   CategoryScale,
@@ -71,6 +72,7 @@ export default function Events() {
   const [error, setError] = useState<string>('');
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -120,9 +122,15 @@ export default function Events() {
         throw new Error('Failed to delete event');
       }
       setEvents((prev) => prev.filter((event) => event.id !== id));
+      setIsDeleteModalOpen(false);
     } catch (error) {
       setError((error as Error).message);
     }
+  };
+
+  const handleDeleteClick = (event: Event) => {
+    setSelectedEvent(event);
+    setIsDeleteModalOpen(true);
   };
 
   if (loading) {
@@ -228,6 +236,7 @@ export default function Events() {
         spacing={10}
         mx={{ base: 4, md: 20 }}
         my={{ base: 4, md: 10 }}
+        py="100"
       >
         <Box p={5} shadow="md" borderWidth="1px">
           <Stat>
@@ -301,7 +310,7 @@ export default function Events() {
                 <Td>
                   <Button
                     colorScheme="red"
-                    onClick={() => handleDelete(event.id)}
+                    onClick={() => handleDeleteClick(event)}
                   >
                     Delete
                   </Button>
@@ -312,12 +321,19 @@ export default function Events() {
         </Table>
       </Box>
       {selectedEvent && (
-        <EditEventModal
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          event={selectedEvent}
-          onSave={handleSave}
-        />
+        <>
+          <EditEventModal
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            event={selectedEvent}
+            onSave={handleSave}
+          />
+          <DeleteEventModal
+            isOpen={isDeleteModalOpen}
+            onClose={() => setIsDeleteModalOpen(false)}
+            onDelete={() => handleDelete(selectedEvent.id)}
+          />
+        </>
       )}
     </div>
   );

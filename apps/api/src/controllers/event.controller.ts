@@ -126,6 +126,10 @@ export const deleteEvent = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
+    await prisma.review.deleteMany({
+      where: { eventId: Number(id) },
+    });
+
     await prisma.transaction.deleteMany({
       where: { eventId: Number(id) },
     });

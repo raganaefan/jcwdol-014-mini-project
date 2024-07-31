@@ -7,11 +7,6 @@ import {
   Image,
   Flex,
   VStack,
-  HStack,
-  Tag,
-  Input,
-  InputGroup,
-  InputLeftElement,
   Select,
   Grid,
   GridItem,
@@ -22,13 +17,14 @@ import {
   Stack,
   Divider,
   SimpleGrid,
-  Spinner, // Import Spinner
-  Center, // Import Center for centering elements
+  Spinner,
+  Center,
+  Input,
 } from '@chakra-ui/react';
 import { useState, useEffect, useCallback } from 'react';
 import { SearchIcon } from '@chakra-ui/icons';
-import { debounce } from 'lodash'; // Or use a custom debounce function
-import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react';
+import { debounce } from 'lodash';
+import { Card, CardBody, CardFooter } from '@chakra-ui/react';
 import { getAllEvent } from '@/api/event';
 import Link from 'next/link';
 
@@ -42,7 +38,7 @@ interface Event {
   location: string;
   description: string;
   category: string;
-  price: number; // Assuming price in cents/smallest unit
+  price: number;
 }
 
 export default function HeroSection() {
@@ -51,9 +47,12 @@ export default function HeroSection() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
-  const toast = useToast();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
+
+  // Pagination States
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 3; // Number of events per page
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -82,8 +81,8 @@ export default function HeroSection() {
         event.eventName.toLowerCase().includes(query.toLowerCase()),
       );
       setFilteredEvents(filtered);
-    }, 300), // Adjust debounce delay as needed
-    [events], // Depend on events to update filtered results
+    }, 300),
+    [events],
   );
 
   // Filter Handling
@@ -98,20 +97,38 @@ export default function HeroSection() {
     setFilteredEvents(filtered);
   }, [selectedCategory, selectedLocation, events]);
 
-  // Search Handling
+  // Pagination Handling
+  const numPages = Math.ceil(filteredEvents.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentEvents = filteredEvents.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newQuery = e.target.value;
     setSearchQuery(newQuery);
     debouncedSearch(newQuery);
   };
 
-  // Format Date Function
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString();
   };
 
-  const numItemsPerRow = useBreakpointValue({ base: 1, md: 2, lg: 4 });
+  const numItemsPerRow = useBreakpointValue({ base: 1, md: 2, lg: 3 });
+
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < numPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   if (loading) {
     return (
@@ -143,7 +160,7 @@ export default function HeroSection() {
 
   return (
     <Box maxW="container.xl" mx="auto" mt={8} p={8}>
-      <Heading as="h2" size="4xl" color="orange.500">
+      <Heading as="h2" size="2xl" mb={6} textAlign="center">
         Explore Events
       </Heading>
       <Flex mb={8} direction={{ base: 'column', md: 'row' }} gap={4}>
@@ -181,7 +198,7 @@ export default function HeroSection() {
       </Flex>
 
       <Grid templateColumns={`repeat(${numItemsPerRow}, 1fr)`} gap={6}>
-        {filteredEvents.map((event) => (
+        {currentEvents.map((event) => (
           <GridItem key={event.id}>
             <Card
               overflow="hidden"
@@ -205,7 +222,9 @@ export default function HeroSection() {
               />
               <CardBody p={4}>
                 <Heading size="md" color="orange.700" my={2}>
-                  {event.eventName}
+                  <Link href={`/event?eventId=${event.id}`}>
+                    {event.eventName}
+                  </Link>
                 </Heading>
                 <Text fontWeight="bold" mb={1} fontSize="md">
                   {formatDate(event.date)} / {event.time} - {event.location}
@@ -236,6 +255,16 @@ export default function HeroSection() {
           </GridItem>
         ))}
       </Grid>
+
+      <Flex mt={8} justify="space-between">
+        <Button onClick={handlePrevious} isDisabled={currentPage === 1}>
+          Previous
+        </Button>
+        <Text alignSelf="center">{`Page ${currentPage} of ${numPages}`}</Text>
+        <Button onClick={handleNext} isDisabled={currentPage === numPages}>
+          Next
+        </Button>
+      </Flex>
     </Box>
   );
 }
